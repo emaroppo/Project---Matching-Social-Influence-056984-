@@ -57,7 +57,7 @@ def greedy_algorithm(init_prob_matrix, budget, k, max_steps):
         
         for i in tqdm(range(n_nodes)):
             if i not in seeds:
-                rewards[i]=test_seed([i]+seeds, np.zeros(n_nodes), prob_matrix, k, max_steps)
+                rewards[i]=test_seed([i]+seeds, prob_matrix, k, max_steps)
         seeds.append(np.argmax(rewards))
         print('Seed ', j+1, ' chosen: ', seeds[-1])
         print('Reward: ', rewards[seeds[-1]])
