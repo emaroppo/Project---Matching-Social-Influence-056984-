@@ -57,7 +57,7 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
       <details>
         <summary> <h3>Step 1: Learning for social influence</h3>
         </summary>
-        Assume that all the properties of the graph are known except for the edge activation probabilities. Apply the greedy algorithm to the problem of maximizing the expected number of activated customers, where each edge activation probability is replaced with its upper confidence bound (in a <b>UCB1-like fashion</b>). Furthermore, apply the <p>greedy algorithm</p> to the same problem when estimating edge activation probabilities with Beta distributions and sampling is used (in a <p>TS-like fashion</p>). Report the plots with the average (over a sufficiently large number of runs) value and standard deviation of the cumulative regret, cumulative reward, instantaneous regret, and instantaneous reward.
+        Assume that all the properties of the graph are known except for the edge activation probabilities. Apply the greedy algorithm to the problem of maximizing the expected number of activated customers, where each edge activation probability is replaced with its upper confidence bound (in a <b>UCB1-like fashion</b>). Furthermore, apply the <b>greedy algorithm</b> to the same problem when estimating edge activation probabilities with Beta distributions and sampling is used (in a <b>TS-like fashion</b>). Report the plots with the average (over a sufficiently large number of runs) value and standard deviation of the cumulative regret, cumulative reward, instantaneous regret, and instantaneous reward.
         </details>
       </li>
       <li>
@@ -104,6 +104,37 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
     </details>
 </details>
 
+<h2>TO DO</h2>
+<ul>
+<li>Preliminary - Environment & clairvoyant algorithm
+<ol>
+<li>Simulate social influence process using Montecarlo technique</li>
+<li>Implement greedy algorithm for influence maximisation</li>
+<li>Find optimal matching</li>
+</ol>
+</li>
+<li>Step 1 - Learning for social influence
+<ol>
+<li>Implement UCB1-like algorithm for estimating activation probabilities</li>
+<li>Implement TS-like algorithm for estimating activation probabilities</li>
+<li>Implement greedy algorithm for influence maximisation</li>
+</ol>
+</li>
+<li>Step 2 - Learning for matching</li>
+<ol>
+<li>Implement UCB1-like algorithm for matching</li>
+<li>Implement TS-like algorithm for matching</li>
+<ol>
 
 
-
+</ol>
+</li>
+<li>Step 3 - Learning for joint social influence and matching</li>
+<ol>
+<li>Implement greedy algorithm for influence maximisation</li>
+<li>Implement TS-like algorithm for matching</li>
+</ol>
+</li>
+<li>Step 4 - Contexts and their generation</li>
+<ol>
+<li>Implement UCB1-like algorithm for influence maximisation</li>
