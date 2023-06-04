@@ -109,42 +109,43 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
 <ul>
 <li><h3>Preliminary - Environment & clairvoyant algorithm</h3>
 <ol>
-<li>Simulate social influence process using Montecarlo technique</li>
-<li>Implement greedy algorithm for influence maximisation</li>
+<li>Simulate social influence process using Montecarlo technique - (video/slides 4.3 - Influence maximization.pdf) </li>
+<li>Implement greedy algorithm for influence maximisation
+(video 4.3; slide 4.3 - Influence maximization.pdf) </li>
 <li>Find optimal matching</li>
 </ol>
 </li>
 <li><h3>Step 1 - Learning for social influence</h3>
 <ol>
-<li>Implement UCB1-like algorithm for estimating activation probabilities</li>
-<li>Implement TS-like algorithm for estimating activation probabilities</li>
+<li>Implement UCB1-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)  </li>
+<li>Implement TS-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 1.1 - Implement the Thompson Sampling Algorithm)</li>
 <li>Implement greedy algorithm for influence maximisation</li>
 </ol>
 </li>
 <li><h3>Step 2 - Learning for matching</h3></li>
 <ol>
-<li>Implement UCB1-like algorithm for matching</li>
-<li>Implement TS-like algorithm for matching</li>
+<li>Implement UCB1-like algorithm for matching (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li>
+<li>Implement TS-like algorithm for matching (video/slides 2.4 - Combinatorial Bandits and Matchin Problems)</li>
 </ol>
 </li>
 <li><h3>Step 3 - Learning for joint social influence and matching</h3></li>
 <ol>
 <li>Implement greedy algorithm for influence maximisation</li>
-<li>Implement TS-like algorithm for estimating activation probabilities and expected reward</li>
-<li>Implement UCB1-like algorithm for estimating activation probabilities and expected reward</li>
+<li>Implement TS-like algorithm for estimating activation probabilities and expected reward  (video/slides 1.6 - bandit algorithm technicalities; tutorial 1.1 - Implement the Thompson Sampling Algorithm; tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li>
+<li>Implement UCB1-like algorithm for estimating activation probabilities and expected reward (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li>
 </ol>
 </li>
 <li><h3>Step 4 - Contexts and their generation</h3></li>
 <ol>
-<li>Implement context generation algorithm</li>
+<li>Implement context generation algorithm (video/slides 1.10) </li>
 <li>Repeat Step 3 with context</li>
 </ol>
 </li>
 <li><h3>Step 5 - Dealing with non-stationary environments with two abrupt changes</h3></li>
 <ol>
-<li>Implement UCB1-like algorithm for estimating activation probabilities</li>
-<li>Implement  SW-UCB1-like algorithm for estimating activation probabilities</li>
-<li>Implement CUSUM UCB1-like algorithm for estimating activation probabilities</li>
+<li>Implement UCB1-like algorithm for estimating activation probabilities (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li>
+<li>Implement  SW-UCB1-like algorithm for estimating activation probabilities (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments; tutorial 1.2 - Thompson Sampling in Non Stationary Environments) </li>
+<li>Implement CUSUM UCB1-like algorithm for estimating activation probabilities (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments;)</li>
 </ol>
 </li>
 <li><h3>Step 6 - Dealing with non-stationary environments with many abrupt changes</h3></li>
