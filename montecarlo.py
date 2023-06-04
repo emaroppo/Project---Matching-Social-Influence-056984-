@@ -1,10 +1,11 @@
 import numpy as np
+from tqdm import tqdm
 
 
 n_nodes=30
 edge_rate=0.1
 graph_structure=np.random.binomial(1, 0.1, (30,30))
-graph_probabilities=np.random.uniform(0.001, 0.07, (30, 30))
+graph_probabilities=np.random.uniform(0.1, 0.2, (30, 30))*graph_structure
 
 
 def simulate_episode(init_prob_matrix, seeds:list, max_steps):
@@ -51,16 +52,22 @@ def greedy_algorithm(init_prob_matrix, budget, k, max_steps):
     
     seeds=[]
     for j in range(budget):
+        print('Choosing seed ', j+1, '...')
         rewards=np.zeros(n_nodes)
-        for i in range(n_nodes):
+        
+        for i in tqdm(range(n_nodes)):
             if i not in seeds:
                 rewards[i]=test_seed([i], np.zeros(n_nodes), prob_matrix, k, max_steps)
         seeds.append(np.argmax(rewards))
+        print('Seed ', j+1, ' chosen: ', seeds[-1])
+        print('Reward: ', rewards[seeds[-1]])
+        print('-------------------')
+
     return seeds
     
 
 
-print(greedy_algorithm(graph_probabilities, 5, 100, 1000))
+print(greedy_algorithm(graph_probabilities, 5, 1000, 100))
 
 
 
