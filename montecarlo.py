@@ -39,10 +39,10 @@ def simulate_episode(init_prob_matrix, seeds:list, max_steps):
         t+=1
     return history, active_nodes
 
-def test_seed(seed, active_nodes, prob_matrix, k, max_steps):
+def test_seed(seeds, prob_matrix, k, max_steps):
     reward = 0
     for i in range(k):
-        history, active_nodes=simulate_episode(prob_matrix, seed, max_steps)
+        history, active_nodes=simulate_episode(prob_matrix, seeds, max_steps)
         reward+=np.sum(active_nodes)
     return reward/k
 
@@ -57,7 +57,7 @@ def greedy_algorithm(init_prob_matrix, budget, k, max_steps):
         
         for i in tqdm(range(n_nodes)):
             if i not in seeds:
-                rewards[i]=test_seed([i], np.zeros(n_nodes), prob_matrix, k, max_steps)
+                rewards[i]=test_seed([i]+seeds, np.zeros(n_nodes), prob_matrix, k, max_steps)
         seeds.append(np.argmax(rewards))
         print('Seed ', j+1, ' chosen: ', seeds[-1])
         print('Reward: ', rewards[seeds[-1]])
