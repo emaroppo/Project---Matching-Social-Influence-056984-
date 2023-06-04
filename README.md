@@ -1,9 +1,9 @@
 # Matching & Social Influence (OLA Project 056984)
 Consider a setting in which a company wants to increase the visibility of its products by using social influence techniques to reach possible customers. Then, it has to match the reached customers with some of its products.
 
-
+<details><summary><h2>Project Info</h2></summary>
 <details>
-  <summary><h2>Environment</h2></summary>
+  <summary><h3>Environment</h3></summary>
   <br>
   We assume that a round corresponds to one day. The network of customers is organized in a graph defined by:
 <ul>
@@ -33,7 +33,7 @@ The time horizon to use in the experiments is 365 rounds long. At each round, af
 
 
 <details>
-  <summary><h2>Clairvoyant optimization algorithm</h2></summary>
+  <summary><h3>Clairvoyant optimization algorithm</h3></summary>
   Consider the case in which the company can directly observe the type of each customer Ci. The objective function to maximize is defined as the sum of the expected reward of the couples of matched customers to products. In particular, for each influenced customer of type Ci matched with a product of type Di the reward is the expected value of the distribution F(Dj, Ci).
 
 The optimization algorithm that we suggest is divided into two steps:
@@ -46,16 +46,17 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
 </details>
 
 
+
 <details>
   <summary><h2>Requirements</h2></summary>
     <ul>
       <li><details>
-        <summary><h3>Step 0: Motivations and environment design</h3></summary>
+        <summary><h4>Step 0: Motivations and environment design</h4></summary>
         Imagine and motivate a realistic application fitting with the scenario above. Describe all the parameters needed to build the simulator.
         </details></li>
       <li>
       <details>
-        <summary> <h3>Step 1: Learning for social influence</h3>
+        <summary> <h4>Step 1: Learning for social influence</h4>
         </summary>
         Assume that all the properties of the graph are known except for the edge activation probabilities. Apply the greedy algorithm to the problem of maximizing the expected number of activated customers, where each edge activation probability is replaced with its upper confidence bound (in a <b>UCB1-like fashion</b>). Furthermore, apply the <b>greedy algorithm</b> to the same problem when estimating edge activation probabilities with Beta distributions and sampling is used (in a <b>TS-like fashion</b>). Report the plots with the average (over a sufficiently large number of runs) value and standard deviation of the cumulative regret, cumulative reward, instantaneous regret, and instantaneous reward.
         </details>
@@ -63,7 +64,7 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
       <li>
       <details>
         <summary>
-        <h3>Step 2: Learning for matching</h3> 
+        <h4>Step 2: Learning for matching</h4> 
         </summary>
         Consider the case in which the company can observe the type of each customer Ci. Moreover, assume that the set of seeds is fixed to the optimal solution found when the activation probabilities are known. On the other hand, suppose that the reward distributions F(Dj, Ci) for the matching are unknown. Apply an <b>upper confidence bound matching algorithm</b>in which the value of a matching is substituted with its upper confidence bound. Do the same using a <b>TS-like algorithm</b>. Report the plots with the average (over a sufficiently large number of runs) value and standard deviation of the cumulative regret, cumulative reward, instantaneous regret, and instantaneous reward.
         </details>
@@ -71,15 +72,15 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
       <li>
       <details>
         <summary>
-          <h3>Step 3: Learning for joint social influence and matching</h3>
+          <h4>Step 3: Learning for joint social influence and matching</h4>
         </summary>
-        Consider the case in which the company can observe the type of each customer Ci.  Moreover, assume that both the edge activation probabilities and reward distributions F(Dj, Ci) are unknown. Apply jointly the <b>greedy algorithm</b> (for influence maximization) and the matching algorithm using upper confidence bound in place of the edge activation probabilities and the expected reward of each match.  Apply jointly the greedy algorithm (for influence maximization) and the <b>matching algorithm using the TS algorithm</b> to estimate the edge activation probabilities and the expected reward of each match. Report the plots of the average value and standard deviation of the cumulative regret, cumulative reward, instantaneous regret, and instantaneous reward.
+        Consider the case in which the company can observe the type of each customer Ci.  Moreover, assume that both the edge activation probabilities and reward distributions F(Dj, Ci) are unknown. Apply jointly the <b>greedy algorithm</b> (for influence maximization) and the matching algorithm using <b>upper confidence bound in place of the edge activation probabilities and the expected reward of each match</b>.  Apply jointly the greedy algorithm (for influence maximization) and the matching algorithm using the <b>TS algorithm to estimate the edge activation probabilities and the expected reward of each match</b>. Report the plots of the average value and standard deviation of the cumulative regret, cumulative reward, instantaneous regret, and instantaneous reward.
         </details>
       </li>
       <li>
       <details>
         <summary>
-        <h3>Step 4: Contexts and their generation</h3>
+        <h4>Step 4: Contexts and their generation</h4>
         </summary>
         Consider the case in which the company cannot observe the type of each customer Ci, but only the features F1 and F2. Moreover, no information about the edge activation probabilities and the reward distributions F(Dj, Ci) is known beforehand. The <b>structure of the contexts is not known beforehand and needs to be learned from data</b>. Important remark: the learner does not know how many contexts there are, while it can only observe the features and data associated with the features. <b>Apply the UCB and TS algorithms (as in Step 3) paired with a context generation algorithm</b>, reporting the plots with the average (over a sufficiently large number of runs) value and standard deviation of the cumulative regret, cumulative reward, instantaneous regret, and instantaneous reward. Apply the context generation algorithms every two weeks of the simulation. Compare the performance of the designed algorithm with the one in Step 3 (that can observe the context).
         </details>
@@ -87,7 +88,7 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
         <li>
         <details>
         <summary>
-          <h3>Step 5: Dealing with non-stationary environments with two abrupt changes</h3>
+          <h4>Step 5: Dealing with non-stationary environments with two abrupt changes</h4>
         </summary>
                         Assume that all the properties of the graph are known except for the edge activation probabilities. Assume that the edge activation probabilities are non-stationary, being <b>subject to seasonal phases (3 different phases spread over 365 days).</b> Provide motivation for the phases. Apply the <b>greedy algorithm</b> to the problem of maximizing the expected number of activated customers, where each edge activation probability is replaced with its <b>upper confidence bound (in a UCB1-like fashion)</b>. Moreover, apply two non-stationary flavors of the algorithm. The <b>first one is passive and exploits a sliding window</b>, while the second one is active and exploits a <b>change detection test</b>. Provide a sensitivity analysis of the algorithms, evaluating different values of the length of the sliding window in the first case and different values for the parameters of the change detection test in the second case. Report the plots of the average value and standard deviation of the cumulative regret, cumulative reward, instantaneous regret, and instantaneous reward.
         </details>
@@ -95,7 +96,7 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
       <li>
       <details>
         <summary>
-          <h3>Step 6: Dealing with non-stationary environments with many abrupt changes</h3>
+          <h4>Step 6: Dealing with non-stationary environments with many abrupt changes</h4>
         </summary>
         Develop the EXP3 algorithm, which is devoted to dealing with adversarial settings. This algorithm is also used to deal with non-stationary settings when no information about the specific form of non-stationarity is known beforehand. Consider a simplified version of Step 5  in which the company chooses a single seed to activate in the social network at each round. First, apply the EXP3 algorithm and the algorithms designed in Step 5 to this simplified version of the setting. The expected result is that EXP3 performs much worse than the two non-stationary versions of UCB1. Subsequently, consider a different non-stationary setting with a higher non-stationarity degree. Such a degree can be modeled by having a large number of phases that frequently change. In particular, consider 5 phases, each one associated with a different optimal price, and these phases cyclically change with a high frequency. In this new setting, apply EXP3, UCB1, and the two non-stationary flavors of UBC1. The expected result is that EXP3 outperforms the non-stationary flavors of UCB1.
         </details>
@@ -104,37 +105,47 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
     </details>
 </details>
 
-<h2>TO DO</h2>
+<h2>To Do:</h2>
 <ul>
-<li>Preliminary - Environment & clairvoyant algorithm
+<li><h3>Preliminary - Environment & clairvoyant algorithm</h3>
 <ol>
 <li>Simulate social influence process using Montecarlo technique</li>
 <li>Implement greedy algorithm for influence maximisation</li>
 <li>Find optimal matching</li>
 </ol>
 </li>
-<li>Step 1 - Learning for social influence
+<li><h3>Step 1 - Learning for social influence</h3>
 <ol>
 <li>Implement UCB1-like algorithm for estimating activation probabilities</li>
 <li>Implement TS-like algorithm for estimating activation probabilities</li>
 <li>Implement greedy algorithm for influence maximisation</li>
 </ol>
 </li>
-<li>Step 2 - Learning for matching</li>
+<li><h3>Step 2 - Learning for matching</h3></li>
 <ol>
 <li>Implement UCB1-like algorithm for matching</li>
 <li>Implement TS-like algorithm for matching</li>
-<ol>
-
-
 </ol>
 </li>
-<li>Step 3 - Learning for joint social influence and matching</li>
+<li><h3>Step 3 - Learning for joint social influence and matching</h3></li>
 <ol>
 <li>Implement greedy algorithm for influence maximisation</li>
-<li>Implement TS-like algorithm for matching</li>
+<li>Implement TS-like algorithm for estimating activation probabilities and expected reward</li>
+<li>Implement UCB1-like algorithm for estimating activation probabilities and expected reward</li>
 </ol>
 </li>
-<li>Step 4 - Contexts and their generation</li>
+<li><h3>Step 4 - Contexts and their generation</h3></li>
 <ol>
-<li>Implement UCB1-like algorithm for influence maximisation</li>
+<li>Implement context generation algorithm</li>
+<li>Repeat Step 3 with context</li>
+</ol>
+</li>
+<li><h3>Step 5 - Dealing with non-stationary environments with two abrupt changes</h3></li>
+<ol>
+<li>Implement UCB1-like algorithm for estimating activation probabilities</li>
+<li>Implement  SW-UCB1-like algorithm for estimating activation probabilities</li>
+<li>Implement CUSUM UCB1-like algorithm for estimating activation probabilities</li>
+</ol>
+</li>
+<li><h3>Step 6 - Dealing with non-stationary environments with many abrupt changes</h3></li>
+</ul>
