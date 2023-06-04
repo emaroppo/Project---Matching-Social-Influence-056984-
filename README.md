@@ -83,6 +83,8 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
         </summary>
         Consider the case in which the company cannot observe the type of each customer Ci, but only the features F1 and F2. Moreover, no information about the edge activation probabilities and the reward distributions F(Dj, Ci) is known beforehand. The <b>structure of the contexts is not known beforehand and needs to be learned from data</b>. Important remark: the learner does not know how many contexts there are, while it can only observe the features and data associated with the features. <b>Apply the UCB and TS algorithms (as in Step 3) paired with a context generation algorithm</b>, reporting the plots with the average (over a sufficiently large number of runs) value and standard deviation of the cumulative regret, cumulative reward, instantaneous regret, and instantaneous reward. Apply the context generation algorithms every two weeks of the simulation. Compare the performance of the designed algorithm with the one in Step 3 (that can observe the context).
         </details>
+        </li>
+        <li>
         <details>
         <summary>
           <h3>Step 5: Dealing with non-stationary environments with two abrupt changes</h3>
