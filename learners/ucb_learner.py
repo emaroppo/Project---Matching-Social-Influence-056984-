@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from scipy.optimize import linear_sum_assignment
 from tqdm import tqdm
-from learner import Learner
+from learners.learner import Learner
 
 
 class UCBLearner(Learner):
@@ -50,7 +50,7 @@ class UCBMatching(UCBLearner):
             self.empirical_means[pulled_arm] = (self.empirical_means[pulled_arm] * (self.t - 1) + reward) / self.t
 
         
-
+#da finire
 class CUMSUMUCBMatching(UCBMatching):
     def __init__(self, n_arms, n_rows, n_cols, M=100, eps=0.05, h=20, alpha=0.01):
         super().__init__(n_arms, n_rows, n_cols)

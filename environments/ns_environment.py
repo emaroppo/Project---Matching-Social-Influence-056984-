@@ -1,9 +1,9 @@
-from environment import Environment
+from environments.environment import Environment
 import numpy as np
 
 class NonStationaryEnvironment(Environment):
-    def __init__(self, n_arms, probabilities, horizon):
-        super().__init__(n_arms, probabilities)
+    def __init__(self, probabilities, horizon):
+        super().__init__(probabilities)
         self.t=0
         n_phases = len(self.probabilities)
         self.phase_size = horizon / n_phases
