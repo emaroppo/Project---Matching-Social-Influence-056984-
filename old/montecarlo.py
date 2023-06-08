@@ -131,7 +131,3 @@ stds=np.random.uniform(1, 3, (3,3))
 
 opt_seeds=greedy_algorithm(graph_probabilities, 3, 1000, 100)
 print(exp_optimum(graph_probabilities, opt_seeds, 1000))
-
-def clairvoyant_algorithm(graph_probabilities):
-
-

@@ -112,7 +112,7 @@ def final_assignment(initial_matrix, m):
         assignment=assignment_single_zero(m, assignment)
     return assignment*initial_matrix, assignment
 
-def hungarian_algorithm(matrix):
+def hungarian_algorithm_prof(matrix):
     m =matrix.copy()
     step1(m)
     step2(m)
