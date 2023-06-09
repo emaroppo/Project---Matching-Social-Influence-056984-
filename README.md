@@ -109,22 +109,23 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
 <ul>
 <li><h3>Preliminary - Environment & clairvoyant algorithm</h3>
 <ol>
-<li>Simulate social influence process using Montecarlo technique - (video/slides 4.3 - Influence maximization.pdf) </li>
-<li>Implement greedy algorithm for influence maximisation
-(video 4.3; slide 4.3 - Influence maximization.pdf) </li>
-<li>Find optimal matching</li>
+<s><li>Simulate social influence process using Montecarlo technique - (video/slides 4.3 - Influence maximization.pdf) </li></s>
+<s><li>Implement greedy algorithm for influence maximisation
+(video 4.3; slide 4.3 - Influence maximization.pdf) </li></s>
+<s><li>Find optimal matching</li></s>
+<li>Possibly re-implement with GreedyLearner class</li>
 </ol>
 </li>
 <li><h3>Step 1 - Learning for social influence</h3>
 <ol>
-<li>Implement UCB1-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)  </li>
-<li>Implement TS-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 1.1 - Implement the Thompson Sampling Algorithm)</li>
+<s><li>Implement UCB1-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)  </li></s>
+<s><li>Implement TS-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 1.1 - Implement the Thompson Sampling Algorithm)</li></s>
 <li>Implement greedy algorithm for influence maximisation</li>
 </ol>
 </li>
 <li><h3>Step 2 - Learning for matching</h3></li>
 <ol>
-<li>Implement UCB1-like algorithm for matching (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li>
+<s><li>Implement UCB1-like algorithm for matching (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li></s>
 <li>Implement TS-like algorithm for matching (video/slides 2.4 - Combinatorial Bandits and Matchin Problems)</li>
 </ol>
 </li>
