@@ -7,6 +7,7 @@ class Environment:
     def round(self, pulled_arm):
         reward = np.random.binomial(1, self.probabilities[pulled_arm])       
         return reward
+
     
 class SocialEnvironment(Environment):
     def __init__(self, probabilities):
@@ -48,7 +49,7 @@ class SocialEnvironment(Environment):
         history, active_nodes=self.simulate_episode(seeds)
         reward = np.sum(active_nodes)
         return reward
-    
+
 class MatchingEnvironment(Environment):
     def __init__(self, reward_matrix):
         self.reward_matrix = reward_matrix
