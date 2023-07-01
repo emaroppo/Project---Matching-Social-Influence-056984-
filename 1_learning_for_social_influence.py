@@ -29,9 +29,9 @@ n_episodes=20000
 1. estimate activation probabilities implicitly by using bandits 
 to find set of seeds maximising reward'''
 
-def step_1(graph_probabilities, n_nodes, n_episodes):
+def step_1(graph_probabilities, n_episodes):
     env=SocialEnvironment(graph_probabilities)
-    ucb_bandit=MAUCBLearner(n_nodes, n_seeds=3)
+    ucb_bandit=MAUCBLearner(graph_probabilities.size[0], n_seeds=3)
     rewards=[]
 
     for i in tqdm(range(n_episodes)):
@@ -51,7 +51,7 @@ def step_1(graph_probabilities, n_nodes, n_episodes):
 #need to modify to keep track of reward for each episode 
 #(to plot regret etc.)
 
-def step_1v2(graph_probabilities, n_nodes, n_episodes):
+def step_1v2(graph_probabilities, n_episodes):
     
     # retrieve edge activation probabilities for each node
     envs = []
