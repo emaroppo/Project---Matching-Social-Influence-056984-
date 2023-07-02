@@ -36,13 +36,10 @@ class TSMatching(TSLearner):
 
         # Repeat entries in available_theta for each product
         available_theta = np.repeat(extended_theta_sample[customer_classes, :], self.n_products_per_class, axis=1)
-        print(available_theta)
-
         row_ind, col_ind = linear_sum_assignment(-available_theta)
         best_arms_global = [(customer_classes[row] if row < len(customer_classes) else self.n_customer_classes, col//3)
                             for row, col in zip(row_ind, col_ind)]
         
-        print(best_arms_global)
 
         return best_arms_global
 
