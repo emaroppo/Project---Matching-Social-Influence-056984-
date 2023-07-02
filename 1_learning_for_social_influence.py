@@ -31,7 +31,7 @@ to find set of seeds maximising reward'''
 
 def step_1(graph_probabilities, n_episodes):
     env=SocialEnvironment(graph_probabilities)
-    ucb_bandit=MAUCBLearner(graph_probabilities.size[0], n_seeds=3)
+    ucb_bandit=MAUCBLearner(graph_probabilities.shape[0], n_seeds=3)
     rewards=[]
 
     for i in tqdm(range(n_episodes)):
