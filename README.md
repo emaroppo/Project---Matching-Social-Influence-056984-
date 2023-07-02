@@ -27,8 +27,7 @@ each unit of product can be matched only with one customer, and each customer ca
 </ul>
 
 The time horizon to use in the experiments is 365 rounds long. At each round, after the set of seeds is selected, the information cascade and matching is repeated sufficiently many times.
-
- </details>
+</details>
 
 
 
@@ -43,6 +42,7 @@ The optimization algorithm that we suggest is divided into two steps:
 When the optimal set of seeds is fixed, compute the value of the optimum by simulating multiple runs of the social influence process and, for each set of activated nodes, <b>compute the value of the optimal matching</b>. The value of the optimum is computed as an expectation over these runs. If there are more activated users than products, define an opportune number of dummy items such that the total number of items equals the number of users. There is no reward when a user of any class is matched with a dummy item. The case in which there are more items than users can be handled in a similar way.
 </li>
 </ol>
+</details>
 </details>
 
 
@@ -120,7 +120,7 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
 </li>
 <li><h3>Step 1 - Learning for social influence</h3>
 <ol>
-<s><li>Implement UCB1-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)  </li></s>
+<s><li>Implement UCB1-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li></s>
 <s><li>Implement TS-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 1.1 - Implement the Thompson Sampling Algorithm)</li></s>
 <s><li>Implement greedy algorithm for influence maximisation</li></s>
 <li>Compare with clairvoyant and plot metrics</li>
