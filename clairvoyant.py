@@ -14,11 +14,14 @@ def clairvoyant(graph_probabilities, node_classes, rewards_parameters, n_exp):
 
     for i in tqdm(range(n_exp)):
         active_nodes=simulate_episode(graph_probabilities, opt_seeds, 100)[1]*node_classes
+        
         #remove all zeros from array (nodes that were not activated)
         active_nodes=active_nodes[active_nodes!=0]
+        
         #print(active_nodes)
         #compute rewards
         hun_matrix_dim=max(len(active_nodes), 9)
+        
         rewards=np.zeros((hun_matrix_dim, hun_matrix_dim))
 
         for j in range(hun_matrix_dim):
@@ -37,6 +40,3 @@ def clairvoyant(graph_probabilities, node_classes, rewards_parameters, n_exp):
         #print('Optimum reward: ', np.sum(optimum))
         #print('-------------------')
     return np.mean(rewards_per_exp), np.std(rewards_per_exp)
-
-
-
