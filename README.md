@@ -129,8 +129,6 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
 <li><h3>Step 2 - Learning for matching</h3></li>
 <ol>
 <li><s>Implement UCB1-like algorithm for matching (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</s>
-<br>
-<ol><li>Adapt to new strategy</li></ol>
 </li>
 
 <s><li>Implement TS-like algorithm for matching (video/slides 2.4 - Combinatorial Bandits and Matchin Problems)</li></s>
