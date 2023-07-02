@@ -37,13 +37,12 @@ ucb_bandit=UCBMatching(rewards_matrix.size, rewards_matrix.shape[0], rewards_mat
 ts_bandit=TSMatching(rewards_matrix.size, rewards_matrix.shape[0], rewards_matrix.shape[1])
 
 
-n_experiments=365
+n_experiments=1000
 
 #random list of 0s, 1s, 2s of variable length between 6 and 12
 
 for i in tqdm(range(n_experiments)):
-    customers=np.random.randint(0, 3, 4)
-    print(customers)
+    customers=np.random.randint(0, 3, 12)
     #pull arm
     #ucb_pulled_arm=ucb_bandit.pull_arm()
     ts_bandit_pulled_arm=ts_bandit.pull_arms(customers)
@@ -54,9 +53,4 @@ for i in tqdm(range(n_experiments)):
     #update bandit
     #ucb_bandit.update(ucb_pulled_arm, ucb_reward)
     ts_bandit.update(ts_bandit_pulled_arm, ts_bandit_reward)
-
-#print(env.round(ucb_bandit.pull_arm()).sum())
-customers=np.random.randint(0, 3, 4)
-print(customers)
-print(env.round(ts_bandit.pull_arms(customers)).sum())
 

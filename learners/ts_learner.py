@@ -26,6 +26,7 @@ class TSMatching(TSLearner):
         self.n_samples = np.zeros((n_customer_classes+1, n_product_classes+1), dtype=int)
         self.rewards_per_arm = {} #temporary fix
         self.n_products_per_class = n_products_per_class
+
     def pull_arms(self, customer_classes):
         theta_sample = np.random.normal(self.mu, 1)
 
@@ -34,11 +35,14 @@ class TSMatching(TSLearner):
         extended_theta_sample[:self.n_customer_classes+1, :self.n_product_classes+1] = theta_sample
 
         # Repeat entries in available_theta for each product
-        available_theta = np.repeat(extended_theta_sample[customer_classes, :], self.n_products_per_class, axis=0)
+        available_theta = np.repeat(extended_theta_sample[customer_classes, :], self.n_products_per_class, axis=1)
+        print(available_theta)
 
         row_ind, col_ind = linear_sum_assignment(-available_theta)
-        best_arms_global = [(customer_classes[row] if row < len(customer_classes) else self.n_customer_classes, col)
+        best_arms_global = [(customer_classes[row] if row < len(customer_classes) else self.n_customer_classes, col//3)
                             for row, col in zip(row_ind, col_ind)]
+        
+        print(best_arms_global)
 
         return best_arms_global
 
