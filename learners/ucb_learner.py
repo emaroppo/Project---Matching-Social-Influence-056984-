@@ -40,6 +40,7 @@ class MAUCBLearner(UCBLearner):
             pulled_arm = np.random.choice(np.where(upper_confidence_bound == upper_confidence_bound.max())[0])
             upper_confidence_bound[pulled_arm] = -np.inf
             pulled_arms.append(pulled_arm)
+        
             
         return pulled_arms
 
@@ -55,29 +56,41 @@ class MAUCBLearner(UCBLearner):
 
 
 class UCBMatching(UCBLearner):
-    def __init__(self, n_arms, n_rows, n_cols):
+    def __init__(self, n_arms, n_customer_classes, n_product_classes):
         super().__init__(n_arms)
-        self.n_rows = n_rows
-        self.n_cols = n_cols
-        assert n_arms == n_rows * n_cols
-        self.n_pulls = np.zeros(n_arms)  # count the number of times each arm has been pulled
+        self.n_customer_classes = n_customer_classes
+        self.n_product_classes = n_product_classes
+        self.empirical_means = np.zeros((n_customer_classes + 1, n_product_classes + 1))
+        self.n_pulls = np.zeros((n_customer_classes + 1, n_product_classes + 1), dtype=int)
+        self.confidence = np.zeros((n_customer_classes + 1, n_product_classes + 1))
+        self.rewards_per_arm = {} #temporary fix
 
-    def pull_arm(self):
+    def pull_arms(self, customer_classes):
         upper_conf = self.empirical_means + self.confidence
         upper_conf[np.isinf(upper_conf)] = 1e3
-        row_ind, col_ind = linear_sum_assignment(-upper_conf.reshape(self.n_rows, self.n_cols))
-        return (row_ind, col_ind)
-    
-    def update(self, pulled_arms, rewards):
-        self.t += 1
-        pulled_arms_flat = np.ravel_multi_index(pulled_arms, (self.n_rows, self.n_cols))
 
-        for pulled_arm, reward in zip(pulled_arms_flat, rewards):
-            self.n_pulls[pulled_arm] += 1
-            self.empirical_means[pulled_arm] = (self.empirical_means[pulled_arm] * (self.n_pulls[pulled_arm] - 1) + reward) / self.n_pulls[pulled_arm]
-            n_samples = max(1, self.n_pulls[pulled_arm])
-            self.confidence[pulled_arm] = np.sqrt(2 * np.log(self.t) / n_samples) if n_samples > 0 else np.inf
-            self.update_observations(pulled_arm, reward)
+        extended_upper_conf = np.repeat(upper_conf, [self.n_product_classes]*(self.n_customer_classes) + [1], axis=1)
+    
+        available_upper_conf = extended_upper_conf[customer_classes, :]
+        row_ind, col_ind = linear_sum_assignment(-available_upper_conf)
+
+        best_arms_global = [(customer_classes[row] if row < len(customer_classes) else self.n_customer_classes, col//3) 
+                            for row, col in zip(row_ind, col_ind)]
+        return best_arms_global
+
+    def update(self, pulled_arms, rewards):
+        for pulled_arm, reward in zip(pulled_arms, rewards):
+            pulled_arm_customer, pulled_arm_product = pulled_arm  # unpacking tuple
+            self.t += 1
+            
+            self.n_pulls[pulled_arm_customer, pulled_arm_product] += 1
+            self.empirical_means[pulled_arm_customer, pulled_arm_product] = (self.empirical_means[pulled_arm_customer, pulled_arm_product] * (self.n_pulls[pulled_arm_customer, pulled_arm_product] - 1) + reward) / self.n_pulls[pulled_arm_customer, pulled_arm_product]            
+            # Update observations
+            # If `self.rewards_per_arm` is a dictionary with tuple keys
+            if pulled_arm not in self.rewards_per_arm:
+                self.rewards_per_arm[pulled_arm] = []
+            self.rewards_per_arm[pulled_arm].append(reward)
+
         
 
 

@@ -44,13 +44,17 @@ n_experiments=1000
 for i in tqdm(range(n_experiments)):
     customers=np.random.randint(0, 3, 12)
     #pull arm
-    #ucb_pulled_arm=ucb_bandit.pull_arm()
+    ucb_pulled_arm=ucb_bandit.pull_arms(customers)
     ts_bandit_pulled_arm=ts_bandit.pull_arms(customers)
-    #print(ucb_pulled_arm, ts_bandit_pulled_arm)
+    print(ucb_pulled_arm, ts_bandit_pulled_arm)
     #retrieve reward
-    #ucb_reward=env.round(ucb_pulled_arm)
+    ucb_reward=env.round(ucb_pulled_arm)
     ts_bandit_reward=env.round(ts_bandit_pulled_arm)
     #update bandit
-    #ucb_bandit.update(ucb_pulled_arm, ucb_reward)
+    ucb_bandit.update(ucb_pulled_arm, ucb_reward)
     ts_bandit.update(ts_bandit_pulled_arm, ts_bandit_reward)
 
+
+print(env.round(ucb_bandit.pull_arms(customers)).sum())
+print(env.round(ts_bandit.pull_arms(customers)).sum())
+print(customers)
