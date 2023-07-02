@@ -114,19 +114,27 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
 (video 4.3; slide 4.3 - Influence maximization.pdf) </li></s>
 <s><li>Find optimal matching</li></s>
 <li>Possibly re-implement with GreedyLearner class</li>
+<li>Code cleanup</li>
+<li>Output all necessary optimal rewards to compute regret in later steps</li>
 </ol>
 </li>
 <li><h3>Step 1 - Learning for social influence</h3>
 <ol>
 <s><li>Implement UCB1-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)  </li></s>
 <s><li>Implement TS-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 1.1 - Implement the Thompson Sampling Algorithm)</li></s>
-<li>Implement greedy algorithm for influence maximisation</li>
+<s><li>Implement greedy algorithm for influence maximisation</li></s>
+<li>Compare with clairvoyant and plot metrics</li>
 </ol>
 </li>
 <li><h3>Step 2 - Learning for matching</h3></li>
 <ol>
-<s><li>Implement UCB1-like algorithm for matching (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li></s>
-<li>Implement TS-like algorithm for matching (video/slides 2.4 - Combinatorial Bandits and Matchin Problems)</li>
+<li><s>Implement UCB1-like algorithm for matching (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</s>
+<br>
+<ol><li>Adapt to new strategy</li></ol>
+</li>
+
+<s><li>Implement TS-like algorithm for matching (video/slides 2.4 - Combinatorial Bandits and Matchin Problems)</li></s>
+<li>Compare with clairvoyant and plot metrics</li>
 </ol>
 </li>
 <li><h3>Step 3 - Learning for joint social influence and matching</h3></li>
@@ -134,12 +142,14 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
 <li>Implement greedy algorithm for influence maximisation</li>
 <li>Implement TS-like algorithm for estimating activation probabilities and expected reward  (video/slides 1.6 - bandit algorithm technicalities; tutorial 1.1 - Implement the Thompson Sampling Algorithm; tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li>
 <li>Implement UCB1-like algorithm for estimating activation probabilities and expected reward (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li>
+<li>Compare with clairvoyant and plot metrics</li>
 </ol>
 </li>
 <li><h3>Step 4 - Contexts and their generation</h3></li>
 <ol>
-<li>Implement context generation algorithm (video/slides 1.10) </li>
+<li>Implement context generation algorithm (video/slides 1.10)</li>
 <li>Repeat Step 3 with context</li>
+<li>Compare with clairvoyant and plot metrics</li>
 </ol>
 </li>
 <li><h3>Step 5 - Dealing with non-stationary environments with two abrupt changes</h3></li>
@@ -147,6 +157,7 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
 <li>Implement UCB1-like algorithm for estimating activation probabilities (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li>
 <li>Implement  SW-UCB1-like algorithm for estimating activation probabilities (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments; tutorial 1.2 - Thompson Sampling in Non Stationary Environments) </li>
 <li>Implement CUSUM UCB1-like algorithm for estimating activation probabilities (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments;)</li>
+<li>Compare with clairvoyant and plot metrics</li>
 </ol>
 </li>
 <li><h3>Step 6 - Dealing with non-stationary environments with many abrupt changes</h3></li>
