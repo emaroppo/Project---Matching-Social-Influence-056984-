@@ -61,10 +61,8 @@ class MatchingEnvironment(Environment):
         self.t = 0
 
     def round(self, pulled_arms):
-        try:
-            rewards = [self.reward_matrix[pulled_arm] for pulled_arm in pulled_arms]
-        except:
-            print(pulled_arms)
+        rewards = [self.reward_matrix[pulled_arm] for pulled_arm in pulled_arms]
+        
         #iterate through all cells of rewards, if a cell is callable, call it and replace it with the result
         for i in range(len(rewards)):
             if callable(rewards[i]):
