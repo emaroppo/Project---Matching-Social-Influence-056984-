@@ -16,11 +16,8 @@ class UCBMatching(UCBLearner):
     def pull_arms(self, customer_classes):
         upper_conf = self.empirical_means + self.confidence
         upper_conf[np.isinf(upper_conf)] = 1e3
-        print(upper_conf)
         extended_upper_conf = np.repeat(upper_conf, self.n_products_per_class, axis=1)
-        print(extended_upper_conf)
         available_upper_conf = extended_upper_conf[customer_classes, :]
-        print(available_upper_conf)
         row_ind, col_ind = linear_sum_assignment(-available_upper_conf)
 
         best_arms_global = [(customer_classes[row] if row < len(customer_classes) else self.n_customer_classes, col//3) 
