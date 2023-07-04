@@ -56,9 +56,10 @@ class MAUCBLearner(UCBLearner):
 
 
 class UCBMatching(UCBLearner):
-    def __init__(self, n_arms, n_customer_classes, n_product_classes):
+    def __init__(self, n_arms, n_customer_classes, n_product_classes, n_products_per_class):
         super().__init__(n_arms)
         self.n_customer_classes = n_customer_classes
+        self.n_products_per_class = n_products_per_class
         self.n_product_classes = n_product_classes
         self.empirical_means = np.zeros((n_customer_classes + 1, n_product_classes + 1))
         self.n_pulls = np.zeros((n_customer_classes + 1, n_product_classes + 1), dtype=int)
@@ -68,10 +69,11 @@ class UCBMatching(UCBLearner):
     def pull_arms(self, customer_classes):
         upper_conf = self.empirical_means + self.confidence
         upper_conf[np.isinf(upper_conf)] = 1e3
-
-        extended_upper_conf = np.repeat(upper_conf, [self.n_product_classes]*(self.n_customer_classes) + [1], axis=1)
-    
+        print(upper_conf)
+        extended_upper_conf = np.repeat(upper_conf, self.n_products_per_class, axis=1)
+        print(extended_upper_conf)
         available_upper_conf = extended_upper_conf[customer_classes, :]
+        print(available_upper_conf)
         row_ind, col_ind = linear_sum_assignment(-available_upper_conf)
 
         best_arms_global = [(customer_classes[row] if row < len(customer_classes) else self.n_customer_classes, col//3) 
@@ -91,12 +93,34 @@ class UCBMatching(UCBLearner):
                 self.rewards_per_arm[pulled_arm] = []
             self.rewards_per_arm[pulled_arm].append(reward)
 
-        
+class JointMAUCBLearner(UCBLearner):
+    def __init__(self, n_nodes, n_seeds):
+        super().__init__(n_nodes)
+        self.n_seeds = n_seeds
+        self.n_pulls = np.zeros(n_nodes)  # count the number of times each arm has been pulled
+    def pull_arms(self):
+        upper_confidence_bound = self.empirical_means + self.confidence
+        pulled_arms = []
+        while len(pulled_arms) < self.n_seeds:
+            pulled_arm = np.random.choice(np.where(upper_confidence_bound == upper_confidence_bound.max())[0])
+            upper_confidence_bound[pulled_arm] = -np.inf
+            pulled_arms.append(pulled_arm) #check whether ties are broken randomly or deterministically
+            
+            
+        return pulled_arms
+    
+    def update(self, pulled_arms, reward):
+        self.t += 1
+        for pulled_arm in pulled_arms:
+            self.n_pulls[pulled_arm] += 1
+            self.empirical_means[pulled_arm] = (self.empirical_means[pulled_arm] * (self.n_pulls[pulled_arm] - 1) + reward) / self.n_pulls[pulled_arm]
+            n_samples = max(1, self.n_pulls[pulled_arm])
+            self.confidence[pulled_arm] = np.sqrt(2 * np.log(self.t) / n_samples) if n_samples > 0 else np.inf
 
+            self.update_observations(pulled_arm, reward)
 
+            
 
-
-        
 #da finire
 class CUMSUMUCBMatching(UCBMatching):
     def __init__(self, n_arms, n_rows, n_cols, M=100, eps=0.05, h=20, alpha=0.01):
