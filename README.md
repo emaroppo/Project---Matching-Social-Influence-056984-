@@ -116,6 +116,7 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
 <li>Possibly re-implement with GreedyLearner class</li>
 <li>Code cleanup</li>
 <li>Output all necessary optimal rewards to compute regret in later steps</li>
+<li>Reimplement clairvoyant algorithm as .opt() method of environment class</li>
 </ol>
 </li>
 <li><h3>Step 1 - Learning for social influence</h3>
