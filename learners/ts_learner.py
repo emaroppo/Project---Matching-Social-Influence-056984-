@@ -26,7 +26,7 @@ class TSMatching(TSLearner):
         self.n_samples = np.zeros((n_customer_classes+1, n_product_classes+1), dtype=int)
         self.rewards_per_arm = {} #temporary fix
         self.n_products_per_class = n_products_per_class
-
+        
     def pull_arms(self, customer_classes):
         theta_sample = np.random.normal(self.mu, 1)
 

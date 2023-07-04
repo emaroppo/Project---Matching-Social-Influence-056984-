@@ -1,6 +1,7 @@
 from environments.environment import MatchingEnvironment
 from learners.ucb_learner import UCBMatching
 from learners.ts_learner import TSMatching
+from utils.matching import generate_reward
 
 import numpy as np
 from tqdm import tqdm
@@ -15,8 +16,7 @@ std_dev=np.ones((3,3))
 reward_parameters=(means, std_dev)
 print(means)
 
-def generate_reward(mean, std_dev):
-    return lambda: np.random.normal(mean, std_dev)
+
 
 
 constant_nodes = False
@@ -29,12 +29,12 @@ else:
     for i in range(node_classes):
         for j in range(product_classes):
             rewards_matrix[i,j]=generate_reward(reward_parameters[0][i,j], reward_parameters[1][i,j])
-
+print(rewards_matrix.shape)
 #initialize environment
 env=MatchingEnvironment(rewards_matrix)
 #initialize bandit
-ucb_bandit=UCBMatching(rewards_matrix.size, rewards_matrix.shape[0], rewards_matrix.shape[1])
-ts_bandit=TSMatching(rewards_matrix.size, rewards_matrix.shape[0], rewards_matrix.shape[1])
+ucb_bandit=UCBMatching(rewards_matrix.size, rewards_matrix.shape[0], rewards_matrix.shape[1], products_per_class)
+ts_bandit=TSMatching(rewards_matrix.size, rewards_matrix.shape[0], rewards_matrix.shape[1], products_per_class)
 
 
 n_experiments=1000
@@ -42,11 +42,11 @@ n_experiments=1000
 #random list of 0s, 1s, 2s of variable length between 6 and 12
 
 for i in tqdm(range(n_experiments)):
-    customers=np.random.randint(0, 3, 12)
+    customers=np.random.randint(0, 3, 4)
     #pull arm
     ucb_pulled_arm=ucb_bandit.pull_arms(customers)
     ts_bandit_pulled_arm=ts_bandit.pull_arms(customers)
-    print(ucb_pulled_arm, ts_bandit_pulled_arm)
+    #print(ucb_pulled_arm, ts_bandit_pulled_arm)
     #retrieve reward
     ucb_reward=env.round(ucb_pulled_arm)
     ts_bandit_reward=env.round(ts_bandit_pulled_arm)

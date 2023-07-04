@@ -152,3 +152,6 @@ def hungarian_algorithm(matrix):
     assignment[assigned_rows, assigned_cols] = 1
 
     return assignment[:n_rows, :n_cols] * matrix, assignment[:n_rows, :n_cols]
+
+def generate_reward(mean, std_dev):
+    return lambda: np.random.normal(mean, std_dev)
