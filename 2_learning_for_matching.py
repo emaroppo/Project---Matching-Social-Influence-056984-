@@ -1,6 +1,6 @@
-from environments.environment import MatchingEnvironment
-from learners.ucb_learner import UCBMatching
-from learners.ts_learner import TSMatching
+from environments.matching_environment import MatchingEnvironment
+from learners.ucb_learners.matching_ucb import UCBMatching
+from learners.ts_learners.matching_ts import TSMatching
 from utils.matching import generate_reward
 
 import numpy as np

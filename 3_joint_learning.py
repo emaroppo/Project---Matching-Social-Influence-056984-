@@ -1,9 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from utils.matching import generate_reward
-from learners.ts_learner import TSMatching
-from learners.ucb_learner import UCBMatching, JointMAUCBLearner
-from environments.environment import MatchingEnvironment, SocialEnvironment
+from learners.ts_learners.matching_ts import TSMatching
+from learners.ucb_learners.matching_ucb import UCBMatching 
+from learners.ucb_learners.joint_ucb import JointMAUCBLearner
+from environments.matching_environment import MatchingEnvironment 
+from environments.social_environment import SocialEnvironment
 from tqdm import tqdm
 
 #init reward matrix, graph probabilities

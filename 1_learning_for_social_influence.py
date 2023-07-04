@@ -3,9 +3,10 @@ import numpy as np
 
 from tqdm import tqdm
 
-from environments.environment import Environment, SocialEnvironment
-from learners.ucb_learner import UCBLearner, MAUCBLearner
-from learners.ts_learner import TSLearner
+from environments.environment import Environment
+from environments.social_environment import SocialEnvironment
+from learners.ucb_learners.ucb_learner import UCBLearner, MAUCBLearner
+from learners.ts_learners.ts_learner import TSLearner
 from utils.influence import greedy_algorithm
 #from clairvoyant import clairvoyant
 
