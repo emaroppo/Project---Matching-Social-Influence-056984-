@@ -1,4 +1,5 @@
 from environments.environment import Environment
+from tqdm import tqdm
 import numpy as np
 
     
@@ -46,3 +47,33 @@ class SocialEnvironment(Environment):
         
         reward = np.sum(active_nodes)
         return reward
+        
+    def opt(self, n_seeds, n_exp=1000, exp_per_seed=100, max_steps=100):
+        prob_matrix=self.probabilities.copy()
+        n_nodes=prob_matrix.shape[0]
+        
+        seeds=[]
+        experiment_rewards=np.zeros(n_exp)
+        optimal_seeds=set()
+
+        for i in range(n_exp):
+            for j in range(n_seeds):
+                print('Choosing seed ', j+1, '...')
+                rewards=np.zeros(n_nodes)
+                
+                for k in tqdm(range(n_nodes)):
+                    if k not in seeds:
+                        reward = 0
+                        for k in range(exp_per_seed):
+                            exp_seeds=[k]+seeds
+                            history, active_nodes=self.simulate_episode(exp_seeds, max_steps)
+                            reward+=np.sum(active_nodes)
+                        rewards[k]=reward/exp_per_seed
+
+                        seeds.append(np.argmax(rewards))
+                print('Seed ', j+1, ' chosen: ', seeds[-1])
+                print('Reward: ', rewards[seeds[-1]])
+                print('-------------------')
+            experiment_rewards[i]=rewards[seeds[-1]]
+            optimal_seeds.add(seeds[-1])
+        return np.mean(experiment_rewards), np.std(experiment_rewards)
