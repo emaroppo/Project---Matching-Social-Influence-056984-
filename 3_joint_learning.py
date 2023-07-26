@@ -5,9 +5,7 @@ from learners.ts_learners.matching_ts import TSMatching
 from learners.ts_learners.joint_ts import JointTSLearner
 from learners.ucb_learners.matching_ucb import UCBMatching 
 from learners.ucb_learners.joint_ucb import JointMAUCBLearner
-
-from environments.matching_environment import MatchingEnvironment 
-from environments.social_environment import SocialEnvironment
+from environments.joint_environment import JointEnvironment
 from tqdm import tqdm
 
 #init reward matrix, graph probabilities
@@ -20,7 +18,6 @@ customer_classes = 3
 product_classes = 3
 products_per_class = 3
 n_exp = 1000
-np.random.seed(42)
 
 graph_probabilities = np.random.uniform(0, 1, (n_nodes, n_nodes))
 constant_rewards = False
@@ -45,8 +42,9 @@ np.fill_diagonal(graph_probabilities, 0)
 node_classes = np.random.randint(0, customer_classes, n_nodes)
 
 #initialise environments
-social_env = SocialEnvironment(graph_probabilities)
-matching_env = MatchingEnvironment(reward_matrix)
+joint_env = JointEnvironment(graph_probabilities, (reward_means, reward_std_dev), node_classes)
+social_env = joint_env.social_environment
+matching_env = joint_env.matching_environment
 
 #initialise bandits
 maucb_bandit = JointMAUCBLearner(n_nodes, n_seeds)
@@ -93,6 +91,7 @@ print(ucb_matching_reward.sum())
 print(ts_pulled_arms)
 print(len(ts_social_reward))
 print(ts_matching_reward.sum())
+print(joint_env.opt(n_seeds, [0,1,2]*3))
 
 #estimate best seeds then perform matching?
 #estimate seeds on the basis of matching payoff?
