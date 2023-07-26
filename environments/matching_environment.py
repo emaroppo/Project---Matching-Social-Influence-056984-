@@ -2,12 +2,27 @@ from environments.environment import Environment
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 
+
+def generate_reward(mean, std_dev):
+    return lambda: np.random.normal(mean, std_dev)
+
 class MatchingEnvironment(Environment):
-    def __init__(self, reward_matrix):
-        self.reward_matrix = reward_matrix
+    def __init__(self, reward_parameters, constant_nodes=True):
+
+        if constant_nodes:
+            reward_matrix=np.random.normal(reward_parameters[0], reward_parameters[1])            
+        else:
+            reward_matrix=np.empty((reward_parameters[0].shape[0], reward_parameters[0].shape[1]), dtype=object)
+            for i in range(reward_parameters[0].shape[0]):
+                for j in range(reward_parameters[0].shape[1]):
+                    reward_matrix[i,j]=generate_reward(reward_parameters[0][i,j], reward_parameters[1][i,j])
+        
         # add a row and a column of zeros to the reward matrix to represent the case in which no match is made
-        self.reward_matrix = np.hstack((self.reward_matrix, np.zeros((self.reward_matrix.shape[0], 1))))
-        self.reward_matrix = np.vstack((self.reward_matrix, np.zeros((1, self.reward_matrix.shape[1]))))
+        reward_matrix = np.hstack((reward_matrix, np.zeros((reward_matrix.shape[0], 1))))
+        reward_matrix = np.vstack((reward_matrix, np.zeros((1, reward_matrix.shape[1]))))
+        self.reward_matrix = reward_matrix
+
+        self.reward_parameters = reward_parameters
 
         self.n_arms = reward_matrix.size
         self.t = 0
@@ -22,13 +37,30 @@ class MatchingEnvironment(Environment):
         
         return np.array(rewards)
     
-    def opt(self, customer_classes):
-        #from the original reward matrix, given the customer_classes and 3 products for each product class, determine new reward matrix
-        new_reward_matrix = np.zeros((len(customer_classes), 3))
-        for i in range(len(customer_classes)):
-            new_reward_matrix[i] = self.reward_matrix[customer_classes[i], :3]
+    def opt(self, customer_classes, product_classes):
+        n_customers= len(customer_classes)
+        n_products= len(product_classes)
         
-        new_reward_matrix = np.repeat(new_reward_matrix, 3, axis=1)
+        if n_customers> n_products:
+            #pad products with 3s
+            product_classes= [*product_classes, *[3]*(n_customers-n_products)]
+            print(product_classes)
+        elif n_products> n_customers:
+            #pad customers with 3s
+            customer_classes= [*customer_classes, *[3]*(n_products-n_customers)]
+
+
+        new_reward_matrix = np.zeros((n_customers, n_products))
+        expected_rewards = self.reward_parameters[0].copy()
+        expected_rewards=np.hstack((expected_rewards, np.zeros((expected_rewards.shape[0], 1))))
+        print(expected_rewards)
+        expected_rewards=np.vstack((expected_rewards, np.zeros((1, expected_rewards.shape[1]))))
+
+        for i in range(n_customers):
+            for j in range(n_products):
+                new_reward_matrix[i,j] = expected_rewards[customer_classes[i], product_classes[j]]
+
+        #print(new_reward_matrix)
         #find optimal assignment
         row_ind, col_ind = linear_sum_assignment(-new_reward_matrix)
         #compute reward of optimal assignment
