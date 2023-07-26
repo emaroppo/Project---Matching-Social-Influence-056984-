@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from utils.matching import generate_reward
 from learners.ts_learners.matching_ts import TSMatching
 from learners.ts_learners.joint_ts import JointTSLearner
 from learners.ucb_learners.matching_ucb import UCBMatching 
@@ -24,16 +23,6 @@ constant_rewards = False
 reward_means = np.random.uniform(10, 20, (customer_classes, product_classes))
 reward_std_dev = np.ones((customer_classes, product_classes))
 
-
-
-if constant_rewards:
-    reward_matrix = np.random.normal(reward_means, reward_std_dev, (customer_classes, product_classes))
-else:
-    reward_matrix = np.empty((customer_classes, product_classes), dtype=object)
-    for i in range(customer_classes):
-        for j in range(product_classes):
-            reward_matrix[i, j] = generate_reward(reward_means[i, j], reward_std_dev[i, j])
-
 graph_structure = np.random.binomial(1, edge_rate, (n_nodes, n_nodes))
 graph_probabilities = np.random.uniform(0.1, 0.2, (n_nodes,n_nodes)) * graph_structure
 np.fill_diagonal(graph_probabilities, 0)
@@ -48,10 +37,10 @@ matching_env = joint_env.matching_environment
 
 #initialise bandits
 maucb_bandit = JointMAUCBLearner(n_nodes, n_seeds)
-matching_ucb = UCBMatching(reward_matrix.size,reward_matrix.shape[0], reward_matrix.shape[1],products_per_class)
+matching_ucb = UCBMatching(reward_means.size,reward_means.shape[0], reward_means.shape[1],products_per_class)
 
 mats_bandit = JointTSLearner(n_nodes, n_seeds)
-matching_ts = TSMatching(reward_matrix.size,reward_matrix.shape[0], reward_matrix.shape[1],products_per_class)
+matching_ts = TSMatching(reward_means.size,reward_means.shape[0], reward_means.shape[1],products_per_class)
 
 for i in tqdm(range(n_exp)):
     ucb_pulled_arms=maucb_bandit.pull_arms()
