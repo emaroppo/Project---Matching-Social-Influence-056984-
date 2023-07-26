@@ -44,18 +44,14 @@ class MatchingEnvironment(Environment):
         if n_customers> n_products:
             #pad products with 3s
             product_classes= [*product_classes, *[3]*(n_customers-n_products)]
-            print(product_classes)
         elif n_products> n_customers:
             #pad customers with 3s
             customer_classes= [*customer_classes, *[3]*(n_products-n_customers)]
 
-
         new_reward_matrix = np.zeros((n_customers, n_products))
         expected_rewards = self.reward_parameters[0].copy()
         expected_rewards=np.hstack((expected_rewards, np.zeros((expected_rewards.shape[0], 1))))
-        print(expected_rewards)
         expected_rewards=np.vstack((expected_rewards, np.zeros((1, expected_rewards.shape[1]))))
-
         for i in range(n_customers):
             for j in range(n_products):
                 new_reward_matrix[i,j] = expected_rewards[customer_classes[i], product_classes[j]]
