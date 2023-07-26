@@ -51,35 +51,38 @@ class SocialEnvironment(Environment):
 
         reward = np.sum(active_nodes)
         return reward
+    
+    def opt_arm(self, budget, k, max_steps):
+        prob_matrix=self.probabilities.copy()
+        n_nodes=prob_matrix.shape[0]
+        
+        seeds=[]
+        for j in range(budget):
+            print('Choosing seed ', j+1, '...')
+            rewards=np.zeros(n_nodes)
+            
+            for i in tqdm(range(n_nodes)):
+                if i not in seeds:
+                    # Inserting the test_seed function here
+                    reward = 0
+                    for _ in range(k):
+                        history, active_nodes=self.simulate_episode([i]+seeds, prob_matrix=prob_matrix, max_steps=max_steps)
+                        reward += np.sum(active_nodes)
+                    rewards[i] = reward/k
+            seeds.append(np.argmax(rewards))
+            print('Seed ', j+1, ' chosen: ', seeds[-1])
+            print('Reward: ', rewards[seeds[-1]])
+            print('-------------------')
+
+        return seeds
 
     def opt(self, n_seeds, n_exp=1000, exp_per_seed=100, max_steps=100):
-        prob_matrix = self.probabilities.copy()
-        n_nodes = prob_matrix.shape[0]
+        if self.opt_value is None:
+            opt_seeds = self.opt_arm(n_seeds, exp_per_seed, max_steps)
+            experiment_rewards = np.zeros(n_exp)
 
-        seeds = []
-        experiment_rewards = np.zeros(n_exp)
-        optimal_seeds = set()
+            for i in tqdm(range(n_exp)):
+                experiment_rewards[i] = self.round(opt_seeds)
 
-        for i in range(n_exp):
-            for j in range(n_seeds):
-                print("Choosing seed ", j + 1, "...")
-                rewards = np.zeros(n_nodes)
-
-                for k in tqdm(range(n_nodes)):
-                    if k not in seeds:
-                        reward = 0
-                        for k in range(exp_per_seed):
-                            exp_seeds = [k] + seeds
-                            history, active_nodes = self.simulate_episode(
-                                exp_seeds, max_steps
-                            )
-                            reward += np.sum(active_nodes)
-                        rewards[k] = reward / exp_per_seed
-
-                        seeds.append(np.argmax(rewards))
-                print("Seed ", j + 1, " chosen: ", seeds[-1])
-                print("Reward: ", rewards[seeds[-1]])
-                print("-------------------")
-            experiment_rewards[i] = rewards[seeds[-1]]
-            optimal_seeds.add(seeds[-1])
-        return np.mean(experiment_rewards), np.std(experiment_rewards)
+            self.opt_value=np.mean(experiment_rewards), np.std(experiment_rewards), opt_seeds
+        return self.opt_value

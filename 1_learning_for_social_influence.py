@@ -102,3 +102,5 @@ def step_1v2(graph_probabilities, n_episodes):
     ucb_rewards=[social_env.round(best_seeds_ucb) for i in range(n_episodes)]
 
     return sum(ts_rewards)/len(ts_rewards), sum(ucb_rewards)/len(ucb_rewards)
+
+print(step_1(graph_probabilities, n_episodes))
