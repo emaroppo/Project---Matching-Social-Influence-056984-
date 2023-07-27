@@ -51,28 +51,30 @@ class SocialEnvironment(Environment):
 
         reward = np.sum(active_nodes)
         return reward
-    
-    def opt_arm(self, budget, k, max_steps):
-        prob_matrix=self.probabilities.copy()
-        n_nodes=prob_matrix.shape[0]
-        
-        seeds=[]
+
+    def opt_arm(self, budget, k=100, max_steps=100):
+        prob_matrix = self.probabilities.copy()
+        n_nodes = prob_matrix.shape[0]
+
+        seeds = []
         for j in range(budget):
-            print('Choosing seed ', j+1, '...')
-            rewards=np.zeros(n_nodes)
-            
+            print("Choosing seed ", j + 1, "...")
+            rewards = np.zeros(n_nodes)
+
             for i in tqdm(range(n_nodes)):
                 if i not in seeds:
                     # Inserting the test_seed function here
                     reward = 0
                     for _ in range(k):
-                        history, active_nodes=self.simulate_episode([i]+seeds, prob_matrix=prob_matrix, max_steps=max_steps)
+                        history, active_nodes = self.simulate_episode(
+                            [i] + seeds, prob_matrix=prob_matrix, max_steps=max_steps
+                        )
                         reward += np.sum(active_nodes)
-                    rewards[i] = reward/k
+                    rewards[i] = reward / k
             seeds.append(np.argmax(rewards))
-            print('Seed ', j+1, ' chosen: ', seeds[-1])
-            print('Reward: ', rewards[seeds[-1]])
-            print('-------------------')
+            print("Seed ", j + 1, " chosen: ", seeds[-1])
+            print("Reward: ", rewards[seeds[-1]])
+            print("-------------------")
 
         return seeds
 
@@ -84,5 +86,9 @@ class SocialEnvironment(Environment):
             for i in tqdm(range(n_exp)):
                 experiment_rewards[i] = self.round(opt_seeds)
 
-            self.opt_value=np.mean(experiment_rewards), np.std(experiment_rewards), opt_seeds
+            self.opt_value = (
+                np.mean(experiment_rewards),
+                np.std(experiment_rewards),
+                opt_seeds,
+            )
         return self.opt_value
