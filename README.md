@@ -107,43 +107,10 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
 
 <h2>To Do:</h2>
 <ul>
-<li><h3>Preliminary - Environment & clairvoyant algorithm</h3>
-<ol>
-<s><li>Simulate social influence process using Montecarlo technique - (video/slides 4.3 - Influence maximization.pdf) </li></s>
-<s><li>Implement greedy algorithm for influence maximisation
-(video 4.3; slide 4.3 - Influence maximization.pdf) </li></s>
-<s><li>Find optimal matching</li></s>
-<li>Possibly re-implement with GreedyLearner class</li>
-<li>Code cleanup</li>
-<li>Output all necessary optimal rewards to compute regret in later steps</li>
-<li>Reimplement clairvoyant algorithm as .opt() method of environment class</li>
-</ol>
-</li>
-<li><h3>Step 1 - Learning for social influence</h3>
-<ol>
-<s><li>Implement UCB1-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li></s>
-<s><li>Implement TS-like algorithm for estimating activation probabilities - (video/slides 1.6 - bandit algorithm technicalities; tutorial 1.1 - Implement the Thompson Sampling Algorithm)</li></s>
-<s><li>Implement greedy algorithm for influence maximisation</li></s>
-<li>Compare with clairvoyant and plot metrics</li>
-</ol>
-</li>
-<li><h3>Step 2 - Learning for matching</h3></li>
-<ol>
-<li><s>Implement UCB1-like algorithm for matching (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</s>
-</li>
-
-<s><li>Implement TS-like algorithm for matching (video/slides 2.4 - Combinatorial Bandits and Matchin Problems)</li></s>
-<li>Compare with clairvoyant and plot metrics</li>
-</ol>
-</li>
-<li><h3>Step 3 - Learning for joint social influence and matching</h3></li>
-<ol>
-<li>Implement greedy algorithm for influence maximisation</li>
-<li>Implement TS-like algorithm for estimating activation probabilities and expected reward  (video/slides 1.6 - bandit algorithm technicalities; tutorial 1.1 - Implement the Thompson Sampling Algorithm; tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li>
-<li>Implement UCB1-like algorithm for estimating activation probabilities and expected reward (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li>
-<li>Compare with clairvoyant and plot metrics</li>
-</ol>
-</li>
+<s><li><h3>Preliminary - Environment & clairvoyant algorithm</h3></li></s>
+<s><li><h3>Step 1 - Learning for social influence</h3></li></s>
+<s><li><h3>Step 2 - Learning for matching</h3></li></s>
+<s><li><h3>Step 3 - Learning for joint social influence and matching</h3></li></s>
 <li><h3>Step 4 - Contexts and their generation</h3></li>
 <ol>
 <li>Implement context generation algorithm (video/slides 1.10)</li>
