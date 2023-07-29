@@ -117,6 +117,7 @@ rewards = np.mean(rewards, axis=0)
 rewards_trend = np.polyfit(np.arange(len(rewards)), rewards, 1)
 print(rewards.shape)
 metrics = compute_metrics(rewards, [env.opt(3)[0]] * 365)
-plot_metrics(*metrics)
+plot_metrics(*metrics, model_name="MAUCB", env_name="Social Environment - MAUCB")
+
 
 print(step_1v2(graph_probabilities, n_episodes))

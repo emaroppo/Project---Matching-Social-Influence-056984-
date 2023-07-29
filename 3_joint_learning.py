@@ -82,15 +82,16 @@ for i in tqdm(range(n_exp)):
 print(ucb_pulled_arms)
 rewards = maucb_bandit.collected_rewards[::3]
 metrics = compute_metrics(rewards, [joint_env.opt(n_seeds, [0, 1, 2] * 3)[0]] * n_exp)
-plot_metrics(*metrics)
+plot_metrics(*metrics, model_name='UCB', env_name="Joint UCB")
 print(ucb_matching_reward.sum())
 
 print(ts_pulled_arms)
 rewards = mats_bandit.collected_rewards[::3]
 metrics = compute_metrics(rewards, [joint_env.opt(n_seeds, [0, 1, 2] * 3)[0]] * n_exp)
-plot_metrics(*metrics)
+plot_metrics(*metrics, model_name='TS', env_name="Joint TS")
 print(ts_matching_reward.sum())
 print(joint_env.opt(n_seeds, [0, 1, 2] * 3))
+
 
 # estimate best seeds then perform matching?
 # estimate seeds on the basis of matching payoff?

@@ -47,11 +47,11 @@ print(ucb_bandit.collected_rewards.shape)
 print(ts_bandit.collected_rewards.shape)
 
 metrics = compute_metrics(ucb_bandit.collected_rewards, np.array(opts))
-plot_metrics(*metrics)
+plot_metrics(*metrics, model_name="UCB", env_name="Matching UCB")
 metrics = compute_metrics(
     ts_bandit.collected_rewards / np.array(opts), np.array([1] * n_experiments)
 )
-plot_metrics(*metrics)
+plot_metrics(*metrics, model_name="TS", env_name="Matching TS")
 
 print(env.round(ucb_bandit.pull_arms(customers)).sum())
 print(env.round(ts_bandit.pull_arms(customers)).sum())
