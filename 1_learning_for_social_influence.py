@@ -8,6 +8,7 @@ from environments.social_environment import SocialEnvironment
 from learners.ucb_learners.ucb_learner import UCBLearner, MAUCBLearner
 from learners.ts_learners.ts_learner import TSLearner
 from metrics import compute_metrics, plot_metrics
+from data_generator import generate_graph
 
 # from clairvoyant import clairvoyant
 
@@ -15,9 +16,16 @@ from metrics import compute_metrics, plot_metrics
 # initialize graph
 n_nodes = 30
 edge_rate = 0.1
-graph_structure = np.random.binomial(1, 0.3, (30, 30))
+graph_structure = np.random.binomial(1, 0.1, (30, 30))
 graph_probabilities = np.random.uniform(0.1, 0.2, (30, 30)) * graph_structure
-node_classes = np.random.randint(1, 4, graph_probabilities.shape[0])
+#print type of graph_probabilities
+print(type(graph_probabilities))
+
+
+print(graph_probabilities.shape)
+graph_probabilities = generate_graph(n_nodes, edge_rate)[0]
+print(graph_probabilities.shape)
+print(graph_probabilities)
 
 # parameters for (gaussian) reward distributions for each node class and product class
 means = np.random.uniform(10, 20, (3, 3))
@@ -117,6 +125,7 @@ rewards = np.mean(rewards, axis=0)
 rewards_trend = np.polyfit(np.arange(len(rewards)), rewards, 1)
 print(rewards.shape)
 metrics = compute_metrics(rewards, [env.opt(3)[0]] * 365)
-plot_metrics(*metrics)
+plot_metrics(*metrics, model_name="MAUCB", env_name="Social Environment - MAUCB")
+
 
 print(step_1v2(graph_probabilities, n_episodes))
