@@ -13,22 +13,32 @@ class SocialEnvironment(Environment):
         )
         n_nodes = prob_matrix.shape[0]
 
+        episode = []
+
         # set up seeds
         active_nodes = np.zeros(n_nodes)
 
         for seed in seeds:
             active_nodes[seed] = 1
 
-        history = np.array([active_nodes])
-
         newly_active_nodes = active_nodes
+        step = tuple()
+        step += (active_nodes, newly_active_nodes)
 
         t = 0
 
         while t < max_steps and np.sum(newly_active_nodes) > 0:
             # retrieve probability of edge activations
-            p = (prob_matrix.T * active_nodes).T
+            mask = np.outer(np.ones(prob_matrix.shape[0]), active_nodes)
+            modified_prob_matrix = prob_matrix * (1 - mask)
+
+            # Calculate edges that might be activated
+            p = (modified_prob_matrix.T * newly_active_nodes).T
             activated_edges = p > np.random.rand(p.shape[0], p.shape[1])
+
+            step += (activated_edges,)
+            episode.append(step)
+            step = tuple()
             # remove activated edges
             prob_matrix = prob_matrix * ((p != 0) == activated_edges)
             # update active nodes
@@ -37,20 +47,21 @@ class SocialEnvironment(Environment):
             )
             # print(newly_active_nodes)
             active_nodes = np.array(active_nodes + newly_active_nodes)
+            step += (active_nodes, newly_active_nodes)
             # print(active_nodes)
             history = np.concatenate((history, [newly_active_nodes]), axis=0)
             t += 1
-        return history, active_nodes
+        return episode, active_nodes
 
     def round(self, pulled_arms, joint=False):
         seeds = pulled_arms
-        history, active_nodes = self.simulate_episode(seeds)
+        episode, active_nodes = self.simulate_episode(seeds)
 
         if joint:
             return active_nodes
 
         reward = np.sum(active_nodes)
-        return reward
+        return episode, reward
 
     def opt_arm(self, budget, k=100, max_steps=100):
         prob_matrix = self.probabilities.copy()
