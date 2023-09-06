@@ -49,7 +49,6 @@ class SocialEnvironment(Environment):
             active_nodes = np.array(active_nodes + newly_active_nodes)
             step += (active_nodes, newly_active_nodes)
             # print(active_nodes)
-            history = np.concatenate((history, [newly_active_nodes]), axis=0)
             t += 1
         return episode, active_nodes
 
@@ -72,7 +71,7 @@ class SocialEnvironment(Environment):
             print("Choosing seed ", j + 1, "...")
             rewards = np.zeros(n_nodes)
 
-            for i in tqdm(range(n_nodes)):
+            for i in range(n_nodes):
                 if i not in seeds:
                     # Inserting the test_seed function here
                     reward = 0
@@ -94,8 +93,8 @@ class SocialEnvironment(Environment):
             opt_seeds = self.opt_arm(n_seeds, exp_per_seed, max_steps)
             experiment_rewards = np.zeros(n_exp)
 
-            for i in tqdm(range(n_exp)):
-                experiment_rewards[i] = self.round(opt_seeds)
+            for i in range(n_exp):
+                _,experiment_rewards[i] = self.round(opt_seeds)
 
             self.opt_value = (
                 np.mean(experiment_rewards),

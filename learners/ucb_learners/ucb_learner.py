@@ -74,15 +74,16 @@ class MAUCBLearner(UCBLearner):
 
 
 class UCBProbLearner:
-    def __init__(self, n_nodes, n_seeds, graph_structure=False):
+    def __init__(self, n_nodes, n_seeds, graph_structure=None):
         self.n_nodes = n_nodes
         self.n_seeds = n_seeds
         self.empirical_means = np.zeros((n_nodes, n_nodes))
         self.confidence = np.array([[np.inf] * n_nodes] * n_nodes)
 
-        if graph_structure:
-            self.empirical_means = self.empirical_means * graph_structure
-            self.confidence = self.confidence * graph_structure
+        if graph_structure is not None:
+            self.graph_structure = graph_structure
+            self.empirical_means[graph_structure==0] = 0
+            self.confidence[graph_structure==0] = 0
 
         self.edge_rewards = np.zeros((n_nodes, n_nodes))
         self.n_pulls = np.zeros((n_nodes, n_nodes))
@@ -91,7 +92,7 @@ class UCBProbLearner:
         self.collected_rewards = []
 
     def pull_arm(self):
-        upper_confidence_bound = self.empirical_means + self.confidence
+        upper_confidence_bound = self.empirical_means + 0.3*self.confidence
         # cap upper confidence bound to 10
         upper_confidence_bound[upper_confidence_bound > 10] = 10
         world_representation = SocialEnvironment(upper_confidence_bound)
@@ -119,16 +120,17 @@ class UCBProbLearner:
 
             # update all means and confidence of edges with at least one pull, set the others to inf
 
-            self.empirical_means = np.divide(
-                self.edge_rewards,
-                self.n_pulls,
-                out=np.zeros_like(self.edge_rewards),
-                where=self.n_pulls != 0,
-            )
-            self.confidence = np.where(
-                self.n_pulls == 0,
-                np.inf,
-                np.sqrt(2 * np.log(1 + np.sum(self.n_pulls)) / self.n_pulls),
-            )
+        self.empirical_means = np.divide(
+            self.edge_rewards,
+            self.n_pulls,
+            out=np.zeros_like(self.edge_rewards),
+            where=self.n_pulls != 0,
+        )
+        self.confidence = np.where(
+            self.n_pulls == 0,
+            np.inf,
+            np.sqrt(2 * np.log(1 + np.sum(self.n_pulls)) / self.n_pulls),
+        )
+        self.confidence[self.graph_structure==0] = 0
 
         self.collected_rewards.append(np.sum(active_nodes))

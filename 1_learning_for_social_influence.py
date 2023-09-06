@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 from environments.environment import Environment
 from environments.social_environment import SocialEnvironment
-from learners.ucb_learners.ucb_learner import UCBLearner, MAUCBLearner
+from learners.ucb_learners.ucb_learner import UCBLearner, MAUCBLearner, UCBProbLearner
 from learners.ts_learners.ts_learner import TSLearner
 from metrics import compute_metrics, plot_metrics
 from data_generator import generate_graph
@@ -17,13 +17,13 @@ from data_generator import generate_graph
 n_nodes = 30
 edge_rate = 0.1
 graph_structure = np.random.binomial(1, 0.1, (30, 30))
-graph_probabilities = np.random.uniform(0.1, 0.2, (30, 30)) * graph_structure
+graph_probabilities = np.random.uniform(0.05, 0.2, (30, 30)) * graph_structure
 #print type of graph_probabilities
 print(type(graph_probabilities))
 
 
 print(graph_probabilities.shape)
-graph_probabilities = generate_graph(n_nodes, edge_rate)[0]
+graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate)
 print(graph_probabilities.shape)
 print(graph_probabilities)
 
@@ -119,13 +119,22 @@ def step_1v2(graph_probabilities, n_episodes):
     return sum(ts_rewards) / len(ts_rewards), sum(ucb_rewards) / len(ucb_rewards)
 
 
-models, env = step_1(graph_probabilities, n_episodes)
-rewards = np.array([model.collected_rewards[::3] * 3 for model in models])
-rewards = np.mean(rewards, axis=0)
-rewards_trend = np.polyfit(np.arange(len(rewards)), rewards, 1)
-print(rewards.shape)
-metrics = compute_metrics(rewards, [env.opt(3)[0]] * 365)
-plot_metrics(*metrics, model_name="MAUCB", env_name="Social Environment - MAUCB")
+model=UCBProbLearner(graph_probabilities.shape[0], n_seeds=3, graph_structure=graph_structure)
+env=SocialEnvironment(graph_probabilities)
+max_=env.opt(3)
 
 
-print(step_1v2(graph_probabilities, n_episodes))
+mean_rewards=[]
+
+for i in tqdm(range(n_episodes*2)):
+    pulled_arm=model.pull_arm()
+    episode,rew=env.round(pulled_arm)
+    rewards = [env.round(pulled_arm) for _ in range(1000)]
+    rewards = [r[1] for r in rewards]
+    print(np.mean(rewards))
+    print(max_)
+
+    model.update(episode)
+
+
+print(model.empirical_means)
