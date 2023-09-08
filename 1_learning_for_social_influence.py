@@ -18,14 +18,8 @@ n_nodes = 30
 edge_rate = 0.1
 graph_structure = np.random.binomial(1, 0.1, (30, 30))
 graph_probabilities = np.random.uniform(0.05, 0.2, (30, 30)) * graph_structure
-#print type of graph_probabilities
-print(type(graph_probabilities))
 
-
-print(graph_probabilities.shape)
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate)
-print(graph_probabilities.shape)
-print(graph_probabilities)
 
 # parameters for (gaussian) reward distributions for each node class and product class
 means = np.random.uniform(10, 20, (3, 3))
@@ -119,22 +113,18 @@ def step_1v2(graph_probabilities, n_episodes):
     return sum(ts_rewards) / len(ts_rewards), sum(ucb_rewards) / len(ucb_rewards)
 
 
-model=UCBProbLearner(graph_probabilities.shape[0], n_seeds=3, graph_structure=graph_structure)
-env=SocialEnvironment(graph_probabilities)
-max_=env.opt(3)
-
-
-mean_rewards=[]
+# Main simulation loop
+model = UCBProbLearner(graph_probabilities.shape[0], n_seeds=3, graph_structure=graph_structure)
+env = SocialEnvironment(graph_probabilities)
+max_ = env.opt(3)
+mean_rewards = []
 
 for i in tqdm(range(n_episodes*2)):
-    pulled_arm=model.pull_arm()
-    episode,rew=env.round(pulled_arm)
-    rewards = [env.round(pulled_arm) for _ in range(1000)]
-    rewards = [r[1] for r in rewards]
+    pulled_arm = model.pull_arm()
+    print(pulled_arm)
+    episode, rew = env.round(pulled_arm)
+    rewards = [r[1] for r in (env.round(pulled_arm) for _ in range(1000))]
     print(np.mean(rewards))
     print(max_)
 
     model.update(episode)
-
-
-print(model.empirical_means)

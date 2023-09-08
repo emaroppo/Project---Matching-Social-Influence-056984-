@@ -66,13 +66,15 @@ class SocialEnvironment(Environment):
         prob_matrix = self.probabilities.copy()
         n_nodes = prob_matrix.shape[0]
 
-        seeds = []
+        seeds = list()
         for j in range(budget):
             print("Choosing seed ", j + 1, "...")
             rewards = np.zeros(n_nodes)
 
-            for i in range(n_nodes):
-                if i not in seeds:
+            seeds_set = set(seeds)
+
+            # Iterate only over nodes not in seeds
+            for i in (set(range(n_nodes)) - seeds_set):
                     # Inserting the test_seed function here
                     reward = 0
                     for _ in range(k):
@@ -81,10 +83,12 @@ class SocialEnvironment(Environment):
                         )
                         reward += np.sum(active_nodes)
                     rewards[i] = reward / k
-            seeds.append(np.argmax(rewards))
-            print("Seed ", j + 1, " chosen: ", seeds[-1])
-            print("Reward: ", rewards[seeds[-1]])
+            chosen_seed = np.argmax(rewards)
+            seeds.append(chosen_seed)
+            print("Seed ", j + 1, " chosen: ", chosen_seed)
+            print("Reward: ", rewards[chosen_seed])
             print("-------------------")
+
 
         return seeds
 

@@ -78,12 +78,13 @@ class UCBProbLearner:
         self.n_nodes = n_nodes
         self.n_seeds = n_seeds
         self.empirical_means = np.zeros((n_nodes, n_nodes))
-        self.confidence = np.array([[np.inf] * n_nodes] * n_nodes)
+        self.confidence = np.full((n_nodes, n_nodes), 1000)
 
+        self.graph_structure = graph_structure
         if graph_structure is not None:
-            self.graph_structure = graph_structure
-            self.empirical_means[graph_structure==0] = 0
-            self.confidence[graph_structure==0] = 0
+            mask = graph_structure == 0
+            self.empirical_means[mask] = 0
+            self.confidence[mask] = 0
 
         self.edge_rewards = np.zeros((n_nodes, n_nodes))
         self.n_pulls = np.zeros((n_nodes, n_nodes))
@@ -92,9 +93,12 @@ class UCBProbLearner:
         self.collected_rewards = []
 
     def pull_arm(self):
-        upper_confidence_bound = self.empirical_means + 0.3*self.confidence
-        # cap upper confidence bound to 10
-        upper_confidence_bound[upper_confidence_bound > 10] = 10
+        sqrt_factor = np.sqrt(max(1, (365 - self.t)) / 365)
+        upper_confidence_bound = (self.empirical_means + sqrt_factor * self.confidence) / (1 + sqrt_factor * self.confidence)
+        
+        # Cap upper confidence bound to 10
+        np.clip(upper_confidence_bound, None, 10, out=upper_confidence_bound)
+        
         world_representation = SocialEnvironment(upper_confidence_bound)
         seeds = world_representation.opt_arm(self.n_seeds)
         return seeds
@@ -103,34 +107,16 @@ class UCBProbLearner:
         self.t += 1
 
         for step in episode:
-            active_nodes = step[0]
-            newly_active_nodes = step[1]
-            activated_edges = step[2]
-            # find edges susceptible to activation
-            # an edge is susceptible to activation if it connects a newly active node to a that is not active
+            active_nodes, newly_active_nodes, activated_edges = step
             susceptible_edges = np.outer(newly_active_nodes, 1 - active_nodes)
-
-            # add 1 to the number of pulls of each edge susceptible to activation
-
+            
+            # Use in-place addition for speed
             self.n_pulls += susceptible_edges
-
-            # add activated edges to self.edge_rewards
-
             self.edge_rewards += activated_edges
 
-            # update all means and confidence of edges with at least one pull, set the others to inf
-
-        self.empirical_means = np.divide(
-            self.edge_rewards,
-            self.n_pulls,
-            out=np.zeros_like(self.edge_rewards),
-            where=self.n_pulls != 0,
-        )
-        self.confidence = np.where(
-            self.n_pulls == 0,
-            np.inf,
-            np.sqrt(2 * np.log(1 + np.sum(self.n_pulls)) / self.n_pulls),
-        )
-        self.confidence[self.graph_structure==0] = 0
-
-        self.collected_rewards.append(np.sum(active_nodes))
+        # Where clause handles the division by zero, so no need for np.divide
+        self.empirical_means[self.n_pulls != 0] = self.edge_rewards[self.n_pulls != 0] / self.n_pulls[self.n_pulls != 0]
+        self.confidence[self.n_pulls != 0] = np.sqrt(2 * np.log(1 + np.sum(self.n_pulls)) / self.n_pulls[self.n_pulls != 0])
+        
+        self.confidence[self.graph_structure == 0] = 0
+        self.collected_rewards.append(np.sum(activated_edges))
