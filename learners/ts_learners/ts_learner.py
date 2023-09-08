@@ -15,3 +15,12 @@ class TSLearner(Learner):
         self.update_observations(pulled_arm, reward)
         self.beta_parameters[pulled_arm, 0] = self.beta_parameters[pulled_arm, 0] + reward
         self.beta_parameters[pulled_arm, 1] = self.beta_parameters[pulled_arm, 1] + 1.0 - reward
+
+
+class TSProbLearner:
+    def __init__(self) -> None:
+        self.n_nodes = 0
+        self.n_seeds = 0
+        self.beta_parameters = np.ones((self.n_nodes, self.n_nodes, 2))
+
+        
