@@ -50,6 +50,7 @@ class SocialEnvironment(Environment):
             step += (active_nodes, newly_active_nodes)
             # print(active_nodes)
             t += 1
+        # print(active_nodes.shape)
         return episode, active_nodes
 
     def round(self, pulled_arms, joint=False):
@@ -57,7 +58,7 @@ class SocialEnvironment(Environment):
         episode, active_nodes = self.simulate_episode(seeds)
 
         if joint:
-            return active_nodes
+            return episode, active_nodes
 
         reward = np.sum(active_nodes)
         return episode, reward
@@ -68,27 +69,28 @@ class SocialEnvironment(Environment):
 
         seeds = list()
         for j in range(budget):
-            print("Choosing seed ", j + 1, "...")
+            # print("Choosing seed ", j + 1, "...")
             rewards = np.zeros(n_nodes)
 
             seeds_set = set(seeds)
 
             # Iterate only over nodes not in seeds
-            for i in (set(range(n_nodes)) - seeds_set):
-                    # Inserting the test_seed function here
-                    reward = 0
-                    for _ in range(k):
-                        history, active_nodes = self.simulate_episode(
-                            [i] + seeds, prob_matrix=prob_matrix, max_steps=max_steps
-                        )
-                        reward += np.sum(active_nodes)
-                    rewards[i] = reward / k
+            for i in set(range(n_nodes)) - seeds_set:
+                # Inserting the test_seed function here
+                reward = 0
+                for _ in range(k):
+                    history, active_nodes = self.simulate_episode(
+                        [i] + seeds, prob_matrix=prob_matrix, max_steps=max_steps
+                    )
+                    reward += np.sum(active_nodes)
+                rewards[i] = reward / k
             chosen_seed = np.argmax(rewards)
             seeds.append(chosen_seed)
+            """
             print("Seed ", j + 1, " chosen: ", chosen_seed)
             print("Reward: ", rewards[chosen_seed])
             print("-------------------")
-
+            """
 
         return seeds
 
@@ -98,7 +100,7 @@ class SocialEnvironment(Environment):
             experiment_rewards = np.zeros(n_exp)
 
             for i in range(n_exp):
-                _,experiment_rewards[i] = self.round(opt_seeds)
+                _, experiment_rewards[i] = self.round(opt_seeds)
 
             self.opt_value = (
                 np.mean(experiment_rewards),
