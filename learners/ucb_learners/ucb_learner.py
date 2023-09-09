@@ -94,11 +94,13 @@ class UCBProbLearner:
 
     def pull_arm(self):
         sqrt_factor = np.sqrt(max(1, (365 - self.t)) / 365)
-        upper_confidence_bound = (self.empirical_means + sqrt_factor * self.confidence) / (1 + sqrt_factor * self.confidence)
-        
+        upper_confidence_bound = (
+            self.empirical_means + sqrt_factor * self.confidence
+        ) / (1 + sqrt_factor * self.confidence)
+
         # Cap upper confidence bound to 10
         np.clip(upper_confidence_bound, None, 10, out=upper_confidence_bound)
-        
+
         world_representation = SocialEnvironment(upper_confidence_bound)
         seeds = world_representation.opt_arm(self.n_seeds)
         return seeds
@@ -109,14 +111,17 @@ class UCBProbLearner:
         for step in episode:
             active_nodes, newly_active_nodes, activated_edges = step
             susceptible_edges = np.outer(newly_active_nodes, 1 - active_nodes)
-            
-            # Use in-place addition for speed
+
             self.n_pulls += susceptible_edges
             self.edge_rewards += activated_edges
 
         # Where clause handles the division by zero, so no need for np.divide
-        self.empirical_means[self.n_pulls != 0] = self.edge_rewards[self.n_pulls != 0] / self.n_pulls[self.n_pulls != 0]
-        self.confidence[self.n_pulls != 0] = np.sqrt(2 * np.log(1 + np.sum(self.n_pulls)) / self.n_pulls[self.n_pulls != 0])
-        
+        self.empirical_means[self.n_pulls != 0] = (
+            self.edge_rewards[self.n_pulls != 0] / self.n_pulls[self.n_pulls != 0]
+        )
+        self.confidence[self.n_pulls != 0] = np.sqrt(
+            2 * np.log(1 + np.sum(self.n_pulls)) / self.n_pulls[self.n_pulls != 0]
+        )
+
         self.confidence[self.graph_structure == 0] = 0
         self.collected_rewards.append(np.sum(activated_edges))

@@ -6,7 +6,7 @@ from tqdm import tqdm
 from environments.environment import Environment
 from environments.social_environment import SocialEnvironment
 from learners.ucb_learners.ucb_learner import UCBLearner, MAUCBLearner, UCBProbLearner
-from learners.ts_learners.ts_learner import TSLearner
+from learners.ts_learners.ts_learner import TSLearner, TSProbLearner
 from metrics import compute_metrics, plot_metrics
 from data_generator import generate_graph
 
@@ -114,17 +114,23 @@ def step_1v2(graph_probabilities, n_episodes):
 
 
 # Main simulation loop
-model = UCBProbLearner(graph_probabilities.shape[0], n_seeds=3, graph_structure=graph_structure)
+model = TSProbLearner(
+    graph_probabilities.shape[0], n_seeds=3, graph_structure=graph_structure
+)
 env = SocialEnvironment(graph_probabilities)
 max_ = env.opt(3)
 mean_rewards = []
 
-for i in tqdm(range(n_episodes*2)):
+for i in tqdm(range(n_episodes)):
     pulled_arm = model.pull_arm()
-    print(pulled_arm)
     episode, rew = env.round(pulled_arm)
     rewards = [r[1] for r in (env.round(pulled_arm) for _ in range(1000))]
-    print(np.mean(rewards))
-    print(max_)
+    exp_reward = sum(rewards) / len(rewards)
+    mean_rewards.append(exp_reward)
+
+    print(max_[0] - exp_reward)
 
     model.update(episode)
+
+metrics = compute_metrics(np.array(mean_rewards), np.array([max_[0]] * n_episodes))
+plot_metrics(*metrics, model_name="TSProbLearner", env_name="Social Environment")
