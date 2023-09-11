@@ -1,6 +1,6 @@
 from environments.matching_environment import MatchingEnvironment
 from learners.ucb_learners.matching_ucb import UCBMatching
-from learners.ts_learners.matching_ts import TSMatching
+from learners.ts_learners.matching_ts import TSMatching2
 from metrics import compute_metrics, plot_metrics
 from data_generator import generate_reward_parameters
 
@@ -17,9 +17,9 @@ reward_parameters = generate_reward_parameters(node_classes, product_classes)
 env = MatchingEnvironment(reward_parameters=reward_parameters)
 # initialize bandit
 ucb_bandit = UCBMatching(node_classes*product_classes, node_classes, product_classes, products_per_class)
-ts_bandit = TSMatching(node_classes*product_classes, node_classes, product_classes, products_per_class)
+ts_bandit = TSMatching2(node_classes*product_classes, node_classes, product_classes, products_per_class)
 
-n_experiments = 1000
+n_experiments = 365
 
 opts = []
 

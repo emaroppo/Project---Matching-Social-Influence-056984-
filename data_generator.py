@@ -19,5 +19,5 @@ def generate_reward_parameters(n_customer_classes, n_product_classes, min_reward
     # reward parameters
     means = np.random.uniform(10, 20, (n_customer_classes, n_product_classes))
     # arr of 1s of size (3,3)
-    std_dev = np.ones((3, 3))
+    std_dev = np.random.uniform(0.5, 2, (3, 3))
     return means, std_dev
