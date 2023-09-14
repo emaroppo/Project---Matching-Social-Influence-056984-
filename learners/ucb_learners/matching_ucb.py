@@ -11,14 +11,11 @@ class UCBMatching(UCBLearner):
         self.n_customer_classes = n_customer_classes
         self.n_products_per_class = n_products_per_class
         self.n_product_classes = n_product_classes
-        self.empirical_means = np.zeros((n_customer_classes + 1, n_product_classes + 1))
-        self.n_pulls = np.zeros(
-            (n_customer_classes + 1, n_product_classes + 1), dtype=int
-        )
         self.confidence = np.zeros((n_customer_classes + 1, n_product_classes + 1))
         self.rewards_per_arm = {}  # temporary fix
+        self.collected_rewards = np.array([])  # Initialize this attribute
 
-    def pull_arms(self, customer_classes):
+    def pull_arm(self, customer_classes):
         upper_conf = self.empirical_means + self.confidence
         upper_conf[np.isinf(upper_conf)] = 1e3
         extended_upper_conf = np.repeat(upper_conf, self.n_products_per_class, axis=1)
