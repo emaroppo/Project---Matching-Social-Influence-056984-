@@ -47,7 +47,7 @@ class CDUCBProbLearner(UCBProbLearner):
         self.change_detection = [
             [CUSUM(M=M, eps=eps, h=h) for _ in range(n_nodes)] for _ in range(n_nodes)
         ]
-        # Index from which rewards are valid since last change point for each edge
+        # Index from which rewards and pulls are valid since last change point for each edge
         self.valid_since_episode = np.zeros((n_nodes, n_nodes), dtype=int)
 
     def update(self, episode):
@@ -55,24 +55,34 @@ class CDUCBProbLearner(UCBProbLearner):
         susceptible, activated = episode
         self.update_observations(susceptible, activated)
 
+        total_valid_susceptibles = 0
+
         for i in range(self.n_nodes):
             for j in range(self.n_nodes):
                 if self.change_detection[i][j].update(self.edge_rewards[i][j]):
                     self.valid_since_episode[i][j] = self.t
                     self.change_detection[i][j].reset()
 
-                # Fetch valid rewards from the history
+                # Fetch valid rewards and susceptibles from the history
                 valid_rewards = [
                     self.activated_edges[k][i][j]
+                    for k in range(self.valid_since_episode[i][j], self.t)
+                ]
+                valid_susceptibles = [
+                    self.susceptible_edges[k][i][j]
                     for k in range(self.valid_since_episode[i][j], self.t)
                 ]
 
                 self.empirical_means[i][j] = (
                     np.mean(valid_rewards) if valid_rewards else 0
                 )
-                n_samples = len(valid_rewards)
+                n_samples = sum(valid_susceptibles)
+                total_valid_susceptibles += n_samples
+
                 self.confidence[i][j] = (
-                    np.sqrt(2 * np.log(self.t) / n_samples) if n_samples > 0 else np.inf
+                    np.sqrt(2 * np.log(total_valid_susceptibles) / n_samples)
+                    if n_samples > 0
+                    else 10e4
                 )
 
         if self.graph_structure is not None:

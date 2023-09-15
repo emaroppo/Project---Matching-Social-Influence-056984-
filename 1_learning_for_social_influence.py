@@ -46,8 +46,7 @@ mean_rewards = []
 for i in tqdm(range(n_episodes)):
     pulled_arm = model.pull_arm()
     episode, rew = env.round(pulled_arm)
-    rewards = [r[1] for r in (env.round(pulled_arm) for _ in range(1000))]
-    exp_reward = sum(rewards) / len(rewards)
+    exp_reward = env.expected_reward(pulled_arm, 100)[0]
     mean_rewards.append(exp_reward)
 
     regret = max_[0] - exp_reward
