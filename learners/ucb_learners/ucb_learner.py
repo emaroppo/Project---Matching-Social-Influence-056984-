@@ -56,7 +56,7 @@ class UCBProbLearner(UCBLearner):
         self.activated_edges = []
 
     def pull_arm(self):
-        sqrt_factor = np.sqrt(max(1, (365 - self.t)) / 365)
+        sqrt_factor = max(1, (365 - self.t)) / 365
         upper_confidence_bound = (
             self.empirical_means + sqrt_factor * self.confidence
         ) / (1 + sqrt_factor * self.confidence)
