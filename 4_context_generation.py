@@ -24,10 +24,25 @@ reward_means, reward_std_dev = generate_reward_parameters(
 )
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate)
 # link node ids to customer classes
-node_classes = np.random.randint(0, n_customer_classes, n_nodes)
 
+node_features = np.random.binomial(1, 0.5, (30, 2))
+#class mapping
+class_0= [0,1]
+class_1= [1,1]
 
-node_features = np.random.binomial(1, 0.3, (30, 3))
+#features to class labels
+node_classes = []
+for i in range(n_nodes):
+    if list(node_features[i]) == class_0:
+        node_classes.append(0)
+    elif list(node_features[i]) == class_1:
+        node_classes.append(1)
+
+    else:
+        node_classes.append(2)
+
+print(node_classes)
+
 
 
 # initialise bandit
@@ -133,3 +148,4 @@ expected_matching_rewards = np.array(expected_matching_rewards) / np.array(
 )
 metrics = compute_metrics(expected_matching_rewards, opt_rewards=np.ones(n_exp))
 plot_metrics(*metrics, model_name="TS", env_name="Joint (Matching) TS")
+
