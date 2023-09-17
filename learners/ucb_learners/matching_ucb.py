@@ -8,6 +8,8 @@ class UCBMatching(UCBLearner):
         self, n_arms, n_customer_classes, n_product_classes, n_products_per_class
     ):
         super().__init__(n_arms)
+        self.n_pulls = np.zeros((n_customer_classes + 1, n_product_classes + 1))
+        self.empirical_means = np.zeros((n_customer_classes + 1, n_product_classes + 1))
         self.n_customer_classes = n_customer_classes
         self.n_products_per_class = n_products_per_class
         self.n_product_classes = n_product_classes
