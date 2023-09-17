@@ -31,7 +31,6 @@ class SocialEnvironment(Environment):
         newly_active_nodes = active_nodes.copy()
         t = 0
         while t < max_steps and np.sum(newly_active_nodes, axis=1).any():
-            # susceptible edges axis 0 is the number of runs axis 1 is newly active nodes axis 2 is complment of active nodes
             susceptible_edges = np.einsum(
                 "ij,ik->ijk", newly_active_nodes, 1 - active_nodes
             ).astype(bool)
@@ -105,13 +104,12 @@ class SocialEnvironment(Environment):
         return seeds
 
     def opt(self, n_seeds, n_exp=1000, exp_per_seed=100, max_steps=100):
-        if self.opt_value is None:
-            opt_seeds = self.opt_arm(n_seeds, exp_per_seed, max_steps)
-            mean_reward, std_dev = self.expected_reward(opt_seeds, n_runs=n_exp)
+        opt_seeds = self.opt_arm(n_seeds, exp_per_seed, max_steps)
+        mean_reward, std_dev = self.expected_reward(opt_seeds, n_runs=n_exp)
 
-            self.opt_value = (
-                mean_reward,
-                std_dev,
-                opt_seeds,
-            )
+        self.opt_value = (
+            mean_reward,
+            std_dev,
+            opt_seeds,
+        )
         return self.opt_value
