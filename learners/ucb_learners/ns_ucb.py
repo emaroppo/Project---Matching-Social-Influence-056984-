@@ -1,5 +1,5 @@
 from learners.ucb_learners.ucb_learner import UCBProbLearner
-from change_detection import CUSUM
+from utils.change_detection import CUSUM
 import numpy as np
 
 

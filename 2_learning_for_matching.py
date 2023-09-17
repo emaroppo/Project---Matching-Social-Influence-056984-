@@ -1,9 +1,9 @@
 from environments.matching_environment import MatchingEnvironment
 from learners.ucb_learners.matching_ucb import UCBMatching
 from learners.ts_learners.matching_ts import TSMatching2
-from metrics import plot_metrics
-from data_generator import generate_reward_parameters, generate_customer_classes
-from simulation import matching_simulation
+from utils.metrics import plot_metrics
+from utils.data_generator import generate_reward_parameters, generate_customer_classes
+from utils.simulation import matching_simulation
 
 # set arguments
 n_node_classes = 3

@@ -4,8 +4,8 @@ from learners.ts_learners.ts_learner import TSProbLearner
 from learners.ucb_learners.matching_ucb import UCBMatching
 from environments.joint_environment import JointEnvironment
 from tqdm import tqdm
-from metrics import compute_metrics, plot_metrics
-from data_generator import generate_graph, generate_reward_parameters
+from utils.metrics import compute_metrics, plot_metrics
+from utils.data_generator import generate_graph, generate_reward_parameters
 
 # init reward matrix, graph probabilities
 n_nodes = 30

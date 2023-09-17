@@ -1,10 +1,9 @@
 from environments.ns_environment import SocialNChanges
 from learners.ucb_learners.ucb_learner import UCBProbLearner
 from learners.ucb_learners.ns_ucb import SWUCBProbLearner, CDUCBProbLearner
-import numpy as np
-from data_generator import generate_graph
-from metrics import plot_metrics
-from simulation import influence_simulation
+from utils.data_generator import generate_graph
+from utils.metrics import plot_metrics
+from utils.simulation import influence_simulation
 
 # set arguments
 n_nodes = 30

@@ -1,9 +1,9 @@
 from environments.social_environment import SocialEnvironment
 from learners.ucb_learners.ucb_learner import UCBProbLearner
 from learners.ts_learners.ts_learner import TSProbLearner
-from metrics import plot_metrics
-from simulation import influence_simulation
-from data_generator import generate_graph
+from utils.metrics import plot_metrics
+from utils.simulation import influence_simulation
+from utils.data_generator import generate_graph
 
 # set arguments
 n_nodes = 30
