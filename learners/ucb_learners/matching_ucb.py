@@ -18,6 +18,8 @@ class UCBMatching(UCBLearner):
         self.collected_rewards = np.array([])  # Initialize this attribute
 
     def pull_arm(self, active_customers, customer_classes):
+        active_customers = active_customers.reshape(-1)
+        customer_classes = customer_classes.reshape(-1)
         upper_conf = self.empirical_means + self.confidence
 
         extended_upper_conf = np.repeat(upper_conf, self.n_products_per_class, axis=1)

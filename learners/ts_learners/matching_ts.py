@@ -163,6 +163,8 @@ class TSMatching3:
         self.n_products_per_class = n_products_per_class
 
     def pull_arm(self, active_customers, customer_classes):
+        active_customers = active_customers.reshape(-1)
+        customer_classes = customer_classes.reshape(-1)
         theta_sample = np.zeros_like(self.mu)
         for i in range(self.mu.shape[0]):
             for j in range(self.mu.shape[1]):

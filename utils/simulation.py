@@ -2,7 +2,7 @@ import numpy as np
 from tqdm import tqdm
 
 
-def influence_simulation(env, models, n_episodes, n_phases=1):
+def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
     all_mean_rewards = []
     all_optimal_rewards = []
     all_models_active_nodes = []  # List of lists to store active nodes for each model
@@ -18,10 +18,11 @@ def influence_simulation(env, models, n_episodes, n_phases=1):
             pulled_arm = model.pull_arm()
 
             if n_phases == 1:
-                episode, active_nodes = env.round(pulled_arm)
+                episode, reward = env.round(pulled_arm, joint=joint)
                 exp_reward = env.expected_reward(pulled_arm, 100)[0]
                 mean_rewards.append(exp_reward)
-                optimal_reward.append(max_[0])  # Moved this inside the loop
+                optimal_reward.append(max_[0])
+                active_nodes.append(reward)
 
                 regret = max_[0] - exp_reward
                 if regret > 0.5:
@@ -74,10 +75,11 @@ def matching_simulation(
 
         products = product_classes * products_per_class
         for i in tqdm(range(n_episodes)):
-            customers = class_mapping[active_nodes[i]]
+            episode_active_nodes = np.argwhere(active_nodes[i]) if active_nodes else None
+            customers = class_mapping[episode_active_nodes]
 
             # pull arm
-            pulled_arm = model.pull_arm(active_nodes[i], customers)
+            pulled_arm = model.pull_arm(episode_active_nodes, customers)
             # retrieve reward
             reward = env.round(pulled_arm)
             reward = [i[1] for i in reward]
@@ -110,7 +112,7 @@ def joint_simulation(
         all_optimal_rewards,
         all_models_active_nodes,
     ) = influence_simulation(
-        env.social_environment, influence_models, n_episodes, n_phases
+        env.social_environment, influence_models, n_episodes, n_phases, joint=True
     )
 
     all_collected_rewards = []

@@ -39,5 +39,4 @@ def generate_reward_parameters(
 def generate_customer_classes(n_customer_classes, n_nodes):
     # generate customer classes
     class_mapping = np.random.randint(0, n_customer_classes, n_nodes)
-    print(class_mapping)
     return class_mapping

@@ -45,7 +45,7 @@ class SocialNChanges(SocialEnvironment):
         curr_probabilities= phase_probabilities[0]
         super().__init__(curr_probabilities)
         self.phase_probabilities = phase_probabilities
-        self.phase_changes = np.random.randint(1, horizon, n_phases)
+        self.phase_changes = np.random.randint(1, horizon, n_phases-1)
         self.phase_changes.sort()
         self.curr_phase = 0
         self.t =0
