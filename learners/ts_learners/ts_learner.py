@@ -33,6 +33,9 @@ class TSProbLearner:
         self.beta_parameters = np.ones((self.n_nodes, self.n_nodes, 2))
         self.graph_structure = graph_structure
         self.t = 0
+        # Initialize the new attributes as empty lists
+        self.activated_edges = []
+        self.susceptible_edges = []
 
     def pull_arm(self):
         probs = self.beta_parameters[:, :, 0] / (
@@ -49,9 +52,16 @@ class TSProbLearner:
     def update(self, episode):
         self.t += 1
 
-        for step in episode:
-            active_nodes, newly_active_nodes, activated_edges = step
-            susceptible_edges = np.outer(newly_active_nodes, 1 - active_nodes)
+        # Extract susceptible and activated edges from the episode tuple
+        susceptible_edges, activated_edges = episode
 
-            self.beta_parameters[:, :, 0] += activated_edges
-            self.beta_parameters[:, :, 1] += susceptible_edges - activated_edges
+        # Call update_observations to append the episode data to the respective lists
+        self.update_observations(susceptible_edges, activated_edges)
+
+        self.beta_parameters[:, :, 0] += activated_edges
+        self.beta_parameters[:, :, 1] += susceptible_edges - activated_edges
+
+    # Define the update_observations method
+    def update_observations(self, susceptible_edges, activated_edges):
+        self.susceptible_edges.append(susceptible_edges)
+        self.activated_edges.append(activated_edges)

@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+import time
 
 
 def compute_metrics(rewards, opt_rewards):
@@ -15,40 +17,59 @@ def compute_metrics(rewards, opt_rewards):
 
 
 def plot_metrics(
-    rewards, opt_rewards, instantaneous_regret, cumulative_regret, rewards_trend=None, model_name=None, env_name=None
+    all_rewards,
+    all_opt_rewards,
+    all_instantaneous_regrets,
+    all_cumulative_regrets,
+    model_names=None,
+    env_name=None,
 ):
-    if env_name is not None:
-        plt.title(env_name)
+    # Create a new directory for saving the plots
+    folder_name = f"run_{int(time.time())}"
+    os.makedirs(folder_name, exist_ok=True)
 
-    if model_name is not None:
-        plt.plot(rewards, label=model_name)
-    else:
-        plt.plot(rewards)
+    num_models = len(all_rewards)
 
-    if rewards_trend is not None:
+    # Plot for Expected Rewards
+    plt.figure()
+    for i in range(num_models):
         plt.plot(
-            np.arange(len(rewards)), np.polyval(rewards_trend, np.arange(len(rewards))), label="trend"
+            all_rewards[i], label=model_names[i] if model_names else f"Model_{i+1}"
         )
-    plt.plot(opt_rewards, label="optimal")
+    plt.plot(
+        all_opt_rewards[0], label="optimal", linestyle="--"
+    )  # Assuming optimal is same for all models
     plt.xlabel("t")
     plt.ylabel("expected reward")
     plt.legend()
+    plt.title(env_name if env_name else "Expected Rewards Comparison")
+    plt.savefig(f"{folder_name}/comparison_expected_reward.png")
     plt.show()
 
-    if env_name is not None:
-        plt.title(env_name)
-        
-    plt.plot(instantaneous_regret, label="instantaneous regret")
+    # Plot for Instantaneous Regret
+    plt.figure()
+    for i in range(num_models):
+        plt.plot(
+            all_instantaneous_regrets[i],
+            label=model_names[i] if model_names else f"Model_{i+1}",
+        )
     plt.xlabel("t")
     plt.ylabel("instantaneous regret")
     plt.legend()
+    plt.title(env_name if env_name else "Instantaneous Regret Comparison")
+    plt.savefig(f"{folder_name}/comparison_instantaneous_regret.png")
     plt.show()
 
-    if env_name is not None:
-        plt.title(env_name)
-
-    plt.plot(cumulative_regret, label="cumulative regret")
+    # Plot for Cumulative Regret
+    plt.figure()
+    for i in range(num_models):
+        plt.plot(
+            all_cumulative_regrets[i],
+            label=model_names[i] if model_names else f"Model_{i+1}",
+        )
     plt.xlabel("t")
     plt.ylabel("cumulative regret")
     plt.legend()
+    plt.title(env_name if env_name else "Cumulative Regret Comparison")
+    plt.savefig(f"{folder_name}/comparison_cumulative_regret.png")
     plt.show()
