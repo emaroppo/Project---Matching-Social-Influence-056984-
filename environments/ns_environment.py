@@ -67,25 +67,38 @@ class SocialNChanges(SocialEnvironment):
         return episode,reward,change
 
 
-class SocialUnknownAbruptChanges(UnknownAbruptChanges, SocialEnvironment):
-    def __init__(self, probabilities, horizon, n_phases=5, change_prob=0.3):
-        UnknownAbruptChanges.__init__(self, probabilities, horizon, n_phases)
-        SocialEnvironment.__init__(self, probabilities)
+class SocialUnknownAbruptChanges(SocialEnvironment):
+    def __init__(self, phase_probabilities, horizon=365, n_phases=5, change_prob=0.3):
+        curr_probabilities = phase_probabilities[0]
+        super().__init__(curr_probabilities)
+        self.phase_probabilities = phase_probabilities
+        
+        # Generate random phase change points, but ensure they happen with at least the change_prob chance.
+        self.phase_changes = []
+        t = 0
+        for _ in range(n_phases - 1):
+            delta = np.random.geometric(change_prob)
+            t += delta
+            if t >= horizon:
+                break
+            self.phase_changes.append(t)
+        
+        self.curr_phase = 0
+        self.t = 0
 
-    def round(self, pulled_arm, joint=False):
-        seeds = pulled_arm
-        # interpreting 'phases cyclically change with a high frequency' as
-        # the sequence of the phases is known, the phase length is short, but unknown
-        if np.random.rand() < self.change_prob:
-            self.current_phase += 1
-            if self.current_phase >= self.n_phases:
-                self.current_phase = 0
+    def round(self, pulled_arms, joint=False):
+        # Check if phase changes at t
+        change = False
+        if self.curr_phase < len(self.phase_changes):
+            if self.t == self.phase_changes[self.curr_phase]:
+                print('phase change!')
+                self.curr_phase += 1
+                self.probabilities = self.phase_probabilities[self.curr_phase]
+                change = True
+        
+        episode, reward = super().round(pulled_arms, joint=joint)
+        
+        self.t += 1
+        
+        return episode, reward, change
 
-        history, active_nodes = self.simulate_episode(
-            seeds, max_steps=100, prob_matrix=self.probabilities[self.current_phase]
-        )
-        if joint:
-            return active_nodes
-
-        reward = np.sum(active_nodes)
-        return reward
