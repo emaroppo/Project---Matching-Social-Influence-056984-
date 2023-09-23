@@ -1,8 +1,8 @@
 import numpy as np
-from scipy.optimize import linear_sum_assignment  # Assuming you are using scipy's method
+from scipy.optimize import (
+    linear_sum_assignment,
+)  # Assuming you are using scipy's method
 import copy
-
-
 
 
 class TreeNode:
@@ -16,38 +16,67 @@ class TreeNode:
         self.children.append(child)
         child.parent = self
 
+
 class Context(TreeNode):
     def __init__(self, split, parent=None, dataset=None, n_product_classes=3):
         super().__init__(parent=parent)
-        self.split = split if split is not None else []  # ordered list of features, values (0 or 1)
+        self.split = (
+            split if split is not None else []
+        )  # ordered list of features, values (0 or 1)
         self.dataset = dataset
         self.n_product_classes = n_product_classes
-        self.dataset_features = dataset[:, :-n_product_classes] if dataset is not None else None
-        self.dataset_rewards = dataset[:, -n_product_classes:] if dataset is not None else None
+        self.dataset_features = (
+            dataset[:, :-n_product_classes] if dataset is not None else None
+        )
+        self.dataset_rewards = (
+            dataset[:, -n_product_classes:] if dataset is not None else None
+        )
 
         self.expected_reward = 0
         self.expected_prob = 0
-        if self.parent and self.parent.dataset is not None and len(self.parent.dataset) > 0:
+        if (
+            self.parent
+            and self.parent.dataset is not None
+            and len(self.parent.dataset) > 0
+        ):
             self.expected_prob = len(self.dataset) / len(self.parent.dataset)
             self.expected_reward = np.mean(self.dataset_rewards)
 
     def update_features_and_rewards(self):
-        self.dataset_features = self.dataset[:, :-self.n_product_classes] if self.dataset is not None else None
-        self.dataset_rewards = self.dataset[:, -self.n_product_classes:] if self.dataset is not None else None
-
-
+        self.dataset_features = (
+            self.dataset[:, : -self.n_product_classes]
+            if self.dataset is not None
+            else None
+        )
+        self.dataset_rewards = (
+            self.dataset[:, -self.n_product_classes :]
+            if self.dataset is not None
+            else None
+        )
 
     def propagate_dataset_down(self):
-        if not self.children:  # Base case: if it's a leaf node, no further action needed
+        if (
+            not self.children
+        ):  # Base case: if it's a leaf node, no further action needed
             return
 
         # If it's not a leaf node, split its dataset and propagate down to its children
         for child in self.children:
-            feature, value = child.split[-1]  # the last split added corresponds to this child
+            feature, value = child.split[
+                -1
+            ]  # the last split added corresponds to this child
             child.dataset = self.dataset[self.dataset[:, feature] == value]
-            print( self.dataset[self.dataset[:, feature] == value])
-            child.dataset_features = child.dataset[:, :-self.product_classes] if child.dataset is not None else None
-            child.dataset_rewards = child.dataset[:, -self.product_classes:] if child.dataset is not None else None
+            print(self.dataset[self.dataset[:, feature] == value])
+            child.dataset_features = (
+                child.dataset[:, : -self.product_classes]
+                if child.dataset is not None
+                else None
+            )
+            child.dataset_rewards = (
+                child.dataset[:, -self.product_classes :]
+                if child.dataset is not None
+                else None
+            )
             child.propagate_dataset_down()  # Recursively do the same for this child
 
     def split_context(self, feature, value):
@@ -60,9 +89,9 @@ class Context(TreeNode):
         dataset_complement = self.dataset[self.dataset[:, feature] != value]
         # create children
         child = Context(child_split, self, dataset)
-        #complement split
+        # complement split
         complement_split = self.split.copy()
-        complement_split.append([feature, 1-value])
+        complement_split.append([feature, 1 - value])
 
         child_complement = Context(complement_split, self, dataset_complement)
 
@@ -104,7 +133,7 @@ class ContextStructure:
                     break
 
         return mapping
-    
+
     def copy(self):
         return copy.deepcopy(self)
 
@@ -122,10 +151,10 @@ class ContextStructure:
         return reward_matrix
 
     def split_context(self, context_index, feature, value):
-        #copy current context structure
+        # copy current context structure
         context_structure = self.copy()
         # split argument context into children
-        context=context_structure.leaves[context_index]
+        context = context_structure.leaves[context_index]
         child, child_complement = context.split_context(feature, value)
         context_structure.leaves.remove(child.parent)
         context_structure.leaves.append(child)
@@ -141,16 +170,15 @@ class ContextStructure:
                 rule[j[0]] = j[1]
             rules.append(rule)
 
-        return rules     
+        return rules
 
     def test_context_structure(self):
         reward_matrix = self.create_reward_matrix()
         rules = self.create_rules()
 
-        
-        product_classes=[0,1,2]*3
-        
-        episode_cum_rew=0
+        product_classes = [0, 1, 2] * 3
+
+        episode_cum_rew = 0
         for item in self.episodes:
             for episode in item:
                 episode_customers, episode_rewards = (
@@ -162,9 +190,8 @@ class ContextStructure:
                     customer_classes_mapping[i] for i in range(len(episode_customers))
                 ]
 
-                #from list of customer classes, product classes and reward matrix, create reward matrix for episode, compute optimal assignment
-                episode_table = np.zeros((len(customer_classes), len(product_classes
-                                                                    )))
+                # from list of customer classes, product classes and reward matrix, create reward matrix for episode, compute optimal assignment
+                episode_table = np.zeros((len(customer_classes), len(product_classes)))
 
                 for i, j in enumerate(customer_classes):
                     for k, l in enumerate(product_classes):
@@ -188,7 +215,9 @@ class ContextGenerationAlgorithm:
         self.context_structures[-1].root.dataset = np.concatenate(self.dataset, axis=0)
         print(self.context_structures[-1].episodes.append(episodes))
         print(self.context_structures[-1].root.dataset.shape)
-        self.context_structures[-1].root.propagate_dataset_down()  # Propagate the dataset down the tree
+        self.context_structures[
+            -1
+        ].root.propagate_dataset_down()  # Propagate the dataset down the tree
 
     def update_context_structures(self, context_structure):
         self.context_structures.append(context_structure)
@@ -201,15 +230,19 @@ class ContextGenerationAlgorithm:
             improvement_found = False  # Initially assume no improvement
             # Start with the latest context structure
             current_structure = self.context_structures[-1]
-            current_reward = current_structure.test_context_structure()  # Initial reward
+            current_reward = (
+                current_structure.test_context_structure()
+            )  # Initial reward
             for leaf_index in range(len(current_structure.leaves)):
                 for feature in range(self.n_features):
                     for value in [0, 1]:  # Assuming binary split
                         # Attempt a split and create a new context structure
-                        proposed_structure = current_structure.split_context(leaf_index, feature, value)
+                        proposed_structure = current_structure.split_context(
+                            leaf_index, feature, value
+                        )
                         proposed_reward = proposed_structure.test_context_structure()
                         print(proposed_reward)
-                        
+
                         # Check if the proposed structure is better
                         if proposed_reward > current_reward:
                             # Replace with the new structure and set flag to start over
@@ -218,5 +251,5 @@ class ContextGenerationAlgorithm:
                             break  # Break out of the innermost loop
                 if improvement_found:
                     break  # If found an improvement, break out of this loop to start over
-            
+
         return self.context_structures[-1]  # Return the best structure

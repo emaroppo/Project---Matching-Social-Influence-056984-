@@ -8,11 +8,27 @@ from utils.metrics import compute_metrics, plot_metrics
 from utils.simulation import joint_simulation
 
 
-def step_3(n_nodes, graph_probabilities, graph_structure, n_seeds, class_mapping, n_customer_classes, n_product_classes, products_per_class, reward_parameters, n_exp=365):
+def step_3(
+    n_nodes,
+    graph_probabilities,
+    graph_structure,
+    n_seeds,
+    class_mapping,
+    n_customer_classes,
+    n_product_classes,
+    products_per_class,
+    reward_parameters,
+    n_exp=365,
+):
     ts_bandit = TSProbLearner(n_nodes, n_seeds, graph_structure=graph_structure)
     ucb_bandit = UCBProbLearner(n_nodes, n_seeds, graph_structure=graph_structure)
 
-    ts_matching = TSMatching3(n_customer_classes*n_product_classes,n_customer_classes, n_product_classes, products_per_class)
+    ts_matching = TSMatching3(
+        n_customer_classes * n_product_classes,
+        n_customer_classes,
+        n_product_classes,
+        products_per_class,
+    )
     ucb_matching = UCBMatching(
         n_customer_classes * n_product_classes,
         n_customer_classes,
@@ -20,9 +36,7 @@ def step_3(n_nodes, graph_probabilities, graph_structure, n_seeds, class_mapping
         products_per_class,
     )
     # initialise environment
-    joint_env = JointEnvironment(
-        graph_probabilities, reward_parameters, class_mapping
-    )
+    joint_env = JointEnvironment(graph_probabilities, reward_parameters, class_mapping)
 
     social, matching = joint_simulation(
         joint_env,
@@ -51,6 +65,5 @@ def step_3(n_nodes, graph_probabilities, graph_structure, n_seeds, class_mapping
         model_names=["Model1", "Model2"],
         env_name="Joint Environment",
     )
-
 
     # check if it should maximise rewards (social & matching) separetely or jointly

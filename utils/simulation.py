@@ -75,7 +75,9 @@ def matching_simulation(
 
         products = product_classes * products_per_class
         for i in tqdm(range(n_episodes)):
-            episode_active_nodes = np.argwhere(active_nodes[i]) if active_nodes else None
+            episode_active_nodes = (
+                np.argwhere(active_nodes[i]) if active_nodes else None
+            )
             customers = class_mapping[episode_active_nodes]
 
             # pull arm

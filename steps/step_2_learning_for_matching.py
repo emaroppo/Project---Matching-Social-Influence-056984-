@@ -6,7 +6,15 @@ from utils.simulation import matching_simulation
 import numpy as np
 
 
-def step_2(reward_parameters, n_node_classes, n_product_classes, n_products_per_class, n_episodes=365, active_nodes=None, class_mapping=None):
+def step_2(
+    reward_parameters,
+    n_node_classes,
+    n_product_classes,
+    n_products_per_class,
+    n_episodes=365,
+    active_nodes=None,
+    class_mapping=None,
+):
     env = MatchingEnvironment2(reward_parameters=reward_parameters)
 
     # initialize bandit

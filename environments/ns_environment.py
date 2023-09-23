@@ -30,7 +30,7 @@ class UnknownAbruptChanges(Environment):
 
     def round(self, pulled_arm):
         if np.random.rand() < self.change_prob:
-            print('phase change!')
+            print("phase change!")
             self.current_phase += 1
             if self.current_phase >= self.n_phases:
                 self.current_phase = 0
@@ -38,33 +38,33 @@ class UnknownAbruptChanges(Environment):
         reward = np.random.binomial(1, p)
         self.t += 1
         return reward
-    
+
 
 class SocialNChanges(SocialEnvironment):
     def __init__(self, phase_probabilities, horizon=365, n_phases=5):
-        curr_probabilities= phase_probabilities[0]
+        curr_probabilities = phase_probabilities[0]
         super().__init__(curr_probabilities)
         self.phase_probabilities = phase_probabilities
-        self.phase_changes = np.random.randint(1, horizon, n_phases-1)
+        self.phase_changes = np.random.randint(1, horizon, n_phases - 1)
         self.phase_changes.sort()
         self.curr_phase = 0
-        self.t =0
-    
+        self.t = 0
+
     def round(self, pulled_arms, joint=False):
-        #check if phase changes at t
+        # check if phase changes at t
         change = False
         if self.curr_phase < len(self.phase_changes):
             if self.t == self.phase_changes[self.curr_phase]:
-                print('phase change!')
-                self.curr_phase+=1
-                self.probabilities=self.phase_probabilities[self.curr_phase]
+                print("phase change!")
+                self.curr_phase += 1
+                self.probabilities = self.phase_probabilities[self.curr_phase]
                 change = True
 
         episode, reward = super().round(pulled_arms, joint=joint)
-        
-        self.t+=1
-        
-        return episode,reward,change
+
+        self.t += 1
+
+        return episode, reward, change
 
 
 class SocialUnknownAbruptChanges(SocialEnvironment):
@@ -72,7 +72,7 @@ class SocialUnknownAbruptChanges(SocialEnvironment):
         curr_probabilities = phase_probabilities[0]
         super().__init__(curr_probabilities)
         self.phase_probabilities = phase_probabilities
-        
+
         # Generate random phase change points, but ensure they happen with at least the change_prob chance.
         self.phase_changes = []
         t = 0
@@ -82,7 +82,7 @@ class SocialUnknownAbruptChanges(SocialEnvironment):
             if t >= horizon:
                 break
             self.phase_changes.append(t)
-        
+
         self.curr_phase = 0
         self.t = 0
 
@@ -91,14 +91,13 @@ class SocialUnknownAbruptChanges(SocialEnvironment):
         change = False
         if self.curr_phase < len(self.phase_changes):
             if self.t == self.phase_changes[self.curr_phase]:
-                print('phase change!')
+                print("phase change!")
                 self.curr_phase += 1
                 self.probabilities = self.phase_probabilities[self.curr_phase]
                 change = True
-        
-        episode, reward = super().round(pulled_arms, joint=joint)
-        
-        self.t += 1
-        
-        return episode, reward, change
 
+        episode, reward = super().round(pulled_arms, joint=joint)
+
+        self.t += 1
+
+        return episode, reward, change

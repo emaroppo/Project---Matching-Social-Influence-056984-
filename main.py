@@ -1,4 +1,8 @@
-from utils.data_generator import generate_graph, generate_reward_parameters, generate_customer_classes
+from utils.data_generator import (
+    generate_graph,
+    generate_reward_parameters,
+    generate_customer_classes,
+)
 from steps.step_1_learning_for_social_influence import step_1
 from steps.step_2_learning_for_matching import step_2
 from steps.step_3_joint_learning import step_3
@@ -46,7 +50,18 @@ step_2(
     active_nodes=active_nodes,
     class_mapping=class_mapping,
 )
-step_3(n_nodes, graph_probabilities, graph_structure, n_seeds, class_mapping, n_customer_classes, n_product_classes, n_products_per_class, reward_parameters, n_exp=365)
+step_3(
+    n_nodes,
+    graph_probabilities,
+    graph_structure,
+    n_seeds,
+    class_mapping,
+    n_customer_classes,
+    n_product_classes,
+    n_products_per_class,
+    reward_parameters,
+    n_exp=365,
+)
 
 # create new graph for non stationary environment
 n_phases = 3
@@ -59,5 +74,7 @@ horizon = 365
 n_nodes = 30
 edge_rate = 0.1
 
-graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate, n_phases=phases)
+graph_probabilities, graph_structure = generate_graph(
+    n_nodes, edge_rate, n_phases=phases
+)
 step_6(graph_probabilities, graph_structure, n_episodes=horizon, n_phases=phases)

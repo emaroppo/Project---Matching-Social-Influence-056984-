@@ -5,6 +5,7 @@ from utils.data_generator import generate_graph
 from utils.metrics import compute_metrics, plot_metrics
 from utils.simulation import influence_simulation
 
+
 def step_5(graph_probabilities, graph_structure, n_phases=3, n_episodes=365):
     env = SocialNChanges(graph_probabilities, n_phases=n_phases)
     # initialise bandit

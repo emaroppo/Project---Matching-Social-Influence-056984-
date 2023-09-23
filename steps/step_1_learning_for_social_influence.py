@@ -4,6 +4,7 @@ from learners.ts_learners.ts_learner import TSProbLearner
 from utils.metrics import compute_metrics, plot_metrics
 from utils.simulation import influence_simulation
 
+
 def step_1(graph_probabilities, graph_structure, n_episodes=365):
     env = SocialEnvironment(graph_probabilities)
 
@@ -19,7 +20,7 @@ def step_1(graph_probabilities, graph_structure, n_episodes=365):
         graph_structure=graph_structure,
     )
 
-    models=[model1, model2]
+    models = [model1, model2]
 
     # run simulation
     all_rewards, all_optimal_rewards, _ = influence_simulation(
@@ -42,4 +43,9 @@ def step_1(graph_probabilities, graph_structure, n_episodes=365):
         env_name="Social Environment",
     )
 
-    return (models, env), (all_rewards, all_optimal_rewards, all_instantaneous_regrets, all_cumulative_regrets)
+    return (models, env), (
+        all_rewards,
+        all_optimal_rewards,
+        all_instantaneous_regrets,
+        all_cumulative_regrets,
+    )
