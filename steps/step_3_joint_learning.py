@@ -1,5 +1,5 @@
 import numpy as np
-from learners.ts_learners.matching_ts import TSMatching3
+from learners.ts_learners.matching_ts import TSMatching
 from learners.ts_learners.ts_learner import TSProbLearner
 from learners.ucb_learners.ucb_learner import UCBProbLearner
 from learners.ucb_learners.matching_ucb import UCBMatching
@@ -23,7 +23,7 @@ def step_3(
     ts_bandit = TSProbLearner(n_nodes, n_seeds, graph_structure=graph_structure)
     ucb_bandit = UCBProbLearner(n_nodes, n_seeds, graph_structure=graph_structure)
 
-    ts_matching = TSMatching3(
+    ts_matching = TSMatching(
         n_customer_classes * n_product_classes,
         n_customer_classes,
         n_product_classes,

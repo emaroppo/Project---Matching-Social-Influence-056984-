@@ -1,6 +1,6 @@
 from environments.matching_environment import MatchingEnvironment2
 from learners.ucb_learners.matching_ucb import UCBMatching
-from learners.ts_learners.matching_ts import TSMatching3
+from learners.ts_learners.matching_ts import TSMatching
 from utils.metrics import compute_metrics, plot_metrics
 from utils.simulation import matching_simulation
 import numpy as np
@@ -24,7 +24,7 @@ def step_2(
         n_product_classes,
         n_products_per_class,
     )
-    ts_bandit = TSMatching3(
+    ts_bandit = TSMatching(
         n_node_classes * n_product_classes,
         n_node_classes,
         n_product_classes,

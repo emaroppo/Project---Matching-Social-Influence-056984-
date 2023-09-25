@@ -34,7 +34,7 @@ reward_means, reward_std_dev = generate_reward_parameters(
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate)
 
 
-step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
+# step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
 
 active_nodes = [
     np.random.choice(30, np.random.randint(6, 12), replace=False)

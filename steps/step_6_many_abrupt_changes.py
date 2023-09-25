@@ -5,10 +5,12 @@ from utils.metrics import compute_metrics, plot_metrics
 from utils.simulation import influence_simulation
 
 
-def step_6(graph_probabilities, graph_structure, n_nodes=30, n_phases=5, horizon=365):
+def step_6(
+    graph_probabilities, graph_structure, n_nodes=30, n_phases=5, n_episodes=365
+):
     # generate environment
     env = SocialUnknownAbruptChanges(
-        graph_probabilities, horizon=horizon, n_phases=n_phases, change_prob=0.2
+        graph_probabilities, horizon=n_episodes, n_phases=n_phases, change_prob=0.2
     )
 
     # generate learner
@@ -20,7 +22,7 @@ def step_6(graph_probabilities, graph_structure, n_nodes=30, n_phases=5, horizon
     )
 
     all_rewards, all_optimal_rewards, _ = influence_simulation(
-        env, [learner, ucb_bandit], n_episodes=horizon, n_phases=n_phases
+        env, [learner, ucb_bandit], n_episodes=n_episodes, n_phases=n_phases
     )
 
     all_instantaneous_regrets = [

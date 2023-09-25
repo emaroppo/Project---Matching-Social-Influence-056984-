@@ -68,7 +68,9 @@ class SocialNChanges(SocialEnvironment):
 
 
 class SocialUnknownAbruptChanges(SocialEnvironment):
-    def __init__(self, phase_probabilities, horizon=365, n_phases=5, change_prob=0.3):
+    def __init__(
+        self, phase_probabilities, n_episodes=365, n_phases=5, change_prob=0.3
+    ):
         curr_probabilities = phase_probabilities[0]
         super().__init__(curr_probabilities)
         self.phase_probabilities = phase_probabilities
@@ -79,7 +81,7 @@ class SocialUnknownAbruptChanges(SocialEnvironment):
         for _ in range(n_phases - 1):
             delta = np.random.geometric(change_prob)
             t += delta
-            if t >= horizon:
+            if t >= n_episodes:
                 break
             self.phase_changes.append(t)
 
