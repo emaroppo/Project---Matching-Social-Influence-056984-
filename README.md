@@ -107,24 +107,7 @@ When the optimal set of seeds is fixed, compute the value of the optimum by simu
 
 <h2>To Do:</h2>
 <ul>
-<s><li><h3>Preliminary - Environment & clairvoyant algorithm</h3></li></s>
-<s><li><h3>Step 1 - Learning for social influence</h3></li></s>
-<s><li><h3>Step 2 - Learning for matching</h3></li></s>
-<s><li><h3>Step 3 - Learning for joint social influence and matching</h3></li></s>
-<li><h3>Step 4 - Contexts and their generation</h3></li>
-<ol>
-<li>Implement context generation algorithm (video/slides 1.10)</li>
-<li>Repeat Step 3 with context</li>
-<li>Compare with clairvoyant and plot metrics</li>
-</ol>
-</li>
-<li><h3>Step 5 - Dealing with non-stationary environments with two abrupt changes</h3></li>
-<ol>
-<li>Implement UCB1-like algorithm for estimating activation probabilities (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments)</li>
-<li>Implement  SW-UCB1-like algorithm for estimating activation probabilities (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments; tutorial 1.2 - Thompson Sampling in Non Stationary Environments) </li>
-<li>Implement CUSUM UCB1-like algorithm for estimating activation probabilities (tutorial 2.2 - CUMSUM-UCB for Online Matching in Non-Stationary Environments;)</li>
-<li>Compare with clairvoyant and plot metrics</li>
-</ol>
-</li>
-<li><h3>Step 6 - Dealing with non-stationary environments with many abrupt changes</h3></li>
+<li>Fix regret computation (cap inst regret at 0)</li>
+<li>Compute optimal on influence clairvoyant +matching clairvoyant</li>
+<li>Try different parameters for step 5
 </ul>
