@@ -34,7 +34,7 @@ reward_means, reward_std_dev = generate_reward_parameters(
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate)
 
 
-# step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
+step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
 
 active_nodes = [
     np.random.choice(30, np.random.randint(6, 12), replace=False)
@@ -50,31 +50,3 @@ step_2(
     active_nodes=active_nodes,
     class_mapping=class_mapping,
 )
-step_3(
-    n_nodes,
-    graph_probabilities,
-    graph_structure,
-    n_seeds,
-    class_mapping,
-    n_customer_classes,
-    n_product_classes,
-    n_products_per_class,
-    reward_parameters,
-    n_exp=365,
-)
-
-# create new graph for non stationary environment
-n_phases = 3
-graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate, n_phases=3)
-
-step_5(graph_probabilities, graph_structure, n_episodes=n_episodes, n_phases=n_phases)
-
-phases = 5
-horizon = 365
-n_nodes = 30
-edge_rate = 0.1
-
-graph_probabilities, graph_structure = generate_graph(
-    n_nodes, edge_rate, n_phases=phases
-)
-step_6(graph_probabilities, graph_structure, n_episodes=horizon, n_phases=phases)

@@ -208,19 +208,12 @@ class ContextGenerationAlgorithm:
         self.n_features = n_features
         self.product_classes = product_classes
         self.context_structures = [ContextStructure(None, n_features, product_classes)]
+        self.episodes = []
         self.dataset = []
 
-    def update_dataset(self, episodes):
-        self.dataset.extend(episodes)
-        self.context_structures[-1].root.dataset = np.concatenate(self.dataset, axis=0)
-        print(self.context_structures[-1].episodes.append(episodes))
-        print(self.context_structures[-1].root.dataset.shape)
-        self.context_structures[
-            -1
-        ].root.propagate_dataset_down()  # Propagate the dataset down the tree
-
-    def update_context_structures(self, context_structure):
-        self.context_structures.append(context_structure)
+    def add_episode(self, episode):
+        self.episodes.append(episode)
+        self.dataset.extend(episode)
 
     def update(self, episodes):
         self.update_dataset(episodes)
@@ -256,31 +249,22 @@ class ContextGenerationAlgorithm:
 
 
 def evaluate_split(self, episode):
-    """
-    Evaluates a potential split and decides whether to accept or reject it.
-    """
-    # ... [Implementation provided above]
-    return optimal_reward, decision
-
-
+    """Evaluates a potential split and decides whether to accept or reject it."""
+    # Compute the expected reward matrix for the episode
+    reward_matrix = self.create_expected_reward_matrix(episode, self.perform_hierarchical_clustering())
     
-    def evaluate_split(self, episode):
-        """Evaluates a potential split and decides whether to accept or reject it."""
-        # Compute the expected reward matrix for the episode
-        reward_matrix = self.create_expected_reward_matrix(episode, self.perform_hierarchical_clustering())
-        
-        # The Hungarian algorithm minimizes cost, so we'll use negative rewards as the cost matrix
-        cost_matrix = -reward_matrix
-        
-        # Using the Hungarian algorithm to find the optimal assignment
-        row_ind, col_ind = linear_sum_assignment(cost_matrix)
-        optimal_reward = -cost_matrix[row_ind, col_ind].sum()
-        
-        # Placeholder for decision criteria:
-        # For the sake of this demonstration, I'll set a threshold for accepting a split.
-        # This can be replaced with more sophisticated logic based on your requirements.
-        threshold = 0.5  # Placeholder value
-        decision = optimal_reward > threshold
-        
-        return optimal_reward, decision
+    # The Hungarian algorithm minimizes cost, so we'll use negative rewards as the cost matrix
+    cost_matrix = -reward_matrix
+    
+    # Using the Hungarian algorithm to find the optimal assignment
+    row_ind, col_ind = linear_sum_assignment(cost_matrix)
+    optimal_reward = -cost_matrix[row_ind, col_ind].sum()
+    
+    # Placeholder for decision criteria:
+    # For the sake of this demonstration, I'll set a threshold for accepting a split.
+    # This can be replaced with more sophisticated logic based on your requirements.
+    threshold = 0.5  # Placeholder value
+    decision = optimal_reward > threshold
+    
+    return optimal_reward, decision
     

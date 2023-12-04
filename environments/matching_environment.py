@@ -110,7 +110,7 @@ class MatchingEnvironment2(Environment):
 
     def round(self, pulled_arms):
         rewards = [
-            self.reward_matrix[pulled_arm[1], pulled_arm[2]]
+            self.reward_matrix[pulled_arm[0], pulled_arm[1]]
             for pulled_arm in pulled_arms
         ]
 

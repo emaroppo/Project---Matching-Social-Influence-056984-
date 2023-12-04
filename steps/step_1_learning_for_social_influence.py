@@ -1,6 +1,6 @@
 from environments.social_environment import SocialEnvironment
-from learners.ucb_learners.ucb_learner import UCBProbLearner
-from learners.ts_learners.ts_learner import TSProbLearner
+from learners.ucb_learners.ucb_prob_learner import UCBProbLearner
+from learners.ts_learners.ts_prob_learner import TSProbLearner
 from utils.metrics import compute_metrics, plot_metrics
 from utils.simulation import influence_simulation
 
