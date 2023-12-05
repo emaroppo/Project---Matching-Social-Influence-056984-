@@ -5,9 +5,9 @@ from utils.data_generator import (
 )
 from steps.step_1_learning_for_social_influence import step_1
 from steps.step_2_learning_for_matching import step_2
-from steps.step_3_joint_learning import step_3
-from steps.step_5_two_abrupt_changes import step_5
-from steps.step_6_many_abrupt_changes import step_6
+#from steps.step_3_joint_learning import step_3
+#from steps.step_5_two_abrupt_changes import step_5
+#from steps.step_6_many_abrupt_changes import step_6
 import numpy as np
 
 n_episodes = 365

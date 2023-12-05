@@ -2,74 +2,51 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import time
+from typing import List, Dict
+
+def compute_metrics(model, env):
+    metrics = dict()
+    metrics['instantaneous_reward'] = model.expected_rewards
+    #calculate instantaneous regret expected value (var[i][0]) and std (var[i][1])
+    expected_inst_regret = env.optimal_rewards[:,0] - model.expected_rewards[:,0]
+    std_inst_regret = env.optimal_rewards[:,1] + model.expected_rewards[:,1]
+    metrics['instantaneous_regret'] = np.array([expected_inst_regret, std_inst_regret])
+    #calculate cumulative reward expected value (var[i][0]) and std (var[i][1]) (cumsum of expected rewards and std of rewards)
+    metrics['cumulative_reward'] = np.cumsum(env.optimal_rewards, axis=0)
+    metrics['cumulative_regret'] = np.cumsum(metrics['instantaneous_regret'], axis=0)
+
+    return metrics
 
 
-def compute_metrics(rewards, opt_rewards):
-    # if array is not 1d or a list take mean along axis 0
-    if type(rewards) is not list and len(rewards.shape) > 1:
-        rewards = rewards.mean(axis=0)
-
-    instantaneous_regret = opt_rewards - rewards
-    cumulative_regret = np.cumsum(instantaneous_regret)
-    rewards_trend = np.polyfit(np.arange(len(rewards)), rewards, 1)
-
-    return rewards, opt_rewards, instantaneous_regret, cumulative_regret, rewards_trend
-
-
-def plot_metrics(
-    all_rewards,
-    all_opt_rewards,
-    all_instantaneous_regrets,
-    all_cumulative_regrets,
-    model_names=None,
-    env_name=None,
-):
+def plot_metrics(metrics_list: List[Dict], env_name=None):
     # Create a new directory for saving the plots
     folder_name = f"run_{int(time.time())}"
     os.makedirs(folder_name, exist_ok=True)
 
-    num_models = len(all_rewards)
+    # Determine the set of all metric names across all models
+    metric_names = set()
+    for metrics in metrics_list:
+        metric_names.update(metrics.keys())
 
-    # Plot for Expected Rewards
-    plt.figure()
-    for i in range(num_models):
-        plt.plot(
-            all_rewards[i], label=model_names[i] if model_names else f"Model_{i+1}"
-        )
-    plt.plot(
-        all_opt_rewards[0], label="optimal", linestyle="--"
-    )  # Assuming optimal is same for all models
-    plt.xlabel("t")
-    plt.ylabel("expected reward")
-    plt.legend()
-    plt.title(env_name if env_name else "Expected Rewards Comparison")
-    plt.savefig(f"{folder_name}/comparison_expected_reward.png")
-    plt.show()
+    # Plot each metric
+    for metric_name in metric_names:
+        plt.figure()
+        for model_metrics in metrics_list:
+            if metric_name in model_metrics:
+                # Extract the expected value and standard deviation
+                expected_values = model_metrics[metric_name][:, 0]
+                std_devs = model_metrics[metric_name][:, 1]
+                timesteps = range(len(expected_values))
 
-    # Plot for Instantaneous Regret
-    plt.figure()
-    for i in range(num_models):
-        plt.plot(
-            all_instantaneous_regrets[i],
-            label=model_names[i] if model_names else f"Model_{i+1}",
-        )
-    plt.xlabel("t")
-    plt.ylabel("instantaneous regret")
-    plt.legend()
-    plt.title(env_name if env_name else "Instantaneous Regret Comparison")
-    plt.savefig(f"{folder_name}/comparison_instantaneous_regret.png")
-    plt.show()
+                # Plot the expected values
+                plt.plot(timesteps, expected_values, label=model_metrics.get('model_name', 'Unknown Model'))
 
-    # Plot for Cumulative Regret
-    plt.figure()
-    for i in range(num_models):
-        plt.plot(
-            all_cumulative_regrets[i],
-            label=model_names[i] if model_names else f"Model_{i+1}",
-        )
-    plt.xlabel("t")
-    plt.ylabel("cumulative regret")
-    plt.legend()
-    plt.title(env_name if env_name else "Cumulative Regret Comparison")
-    plt.savefig(f"{folder_name}/comparison_cumulative_regret.png")
-    plt.show()
+                # Add a colored band for the standard deviation
+                plt.fill_between(timesteps, expected_values - std_devs, expected_values + std_devs, alpha=0.2)
+
+        plt.title(f'{metric_name} over Time' + ('' if env_name is None else f' in {env_name}'))
+        plt.xlabel('Time Step')
+        plt.ylabel(metric_name)
+        plt.legend()
+        plt.savefig(f'{folder_name}/{metric_name}.png')
+        plt.close()

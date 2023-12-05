@@ -1,16 +1,11 @@
 import numpy as np
 from tqdm import tqdm
+from utils.metrics_updated import compute_metrics, plot_metrics
 
 
 def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
-    all_mean_rewards = []
-    all_optimal_rewards = []
-    all_models_active_nodes = []  # List of lists to store active nodes for each model
-
+    all_metrics = []
     for model in models:
-        mean_rewards = []
-        optimal_reward = []
-        active_nodes = []  # List to store active nodes for this model
 
         max_ = env.opt(3)
 
@@ -19,42 +14,32 @@ def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
 
             if n_phases == 1:
                 episode, reward = env.round(pulled_arm, joint=joint)
-                exp_reward = env.expected_reward(pulled_arm, 100)[0]
-                mean_rewards.append(exp_reward)
-                optimal_reward.append(max_[0])
-                active_nodes.append(reward)
-
-                regret = max_[0] - exp_reward
-                if regret > 0.5:
-                    print("Regret: ", regret)
-
-                model.update(episode)
             else:
-                episode, rew, change = env.round(pulled_arm)
+                episode, reward, change = env.round(pulled_arm)
                 if change:
                     print("change at t=", i)
                     max_ = env.opt(3)
-                optimal_reward.append(max_[0])  # Moved this inside the loop
-                exp_reward = env.expected_reward(pulled_arm, 100)[0]
-                mean_rewards.append(exp_reward)
 
-                regret = max_[0] - exp_reward
-                if regret > 0.5:
-                    print("Regret: ", regret)
+            exp_reward = env.expected_reward(pulled_arm, 100)
+            if n_phases != 1:
+                exp_reward = exp_reward[0]
 
-                model.update(episode)
+            model.expected_rewards = np.append(model.expected_rewards, [exp_reward], axis=0)
+            env.optimal_rewards = np.append(env.optimal_rewards, [max_[:2]], axis=0)
+            model.update(episode)
+            
+        metrics = compute_metrics(
+            model, env
+        )
+        all_metrics.append(metrics)
+        env.optimal_rewards = np.empty((0, 2)) #temporary fix
+    
+    plot_metrics(all_metrics, env_name="Social Environment")
 
-        all_mean_rewards.append(mean_rewards)
-        all_optimal_rewards.append(optimal_reward)
-        all_models_active_nodes.append(
-            active_nodes
-        )  # Append the active nodes list for this model to the master list
+    return all_metrics
+            
 
-    return (
-        np.array(all_mean_rewards),
-        np.array(all_optimal_rewards),
-        all_models_active_nodes,
-    )
+        
 
 
 def matching_simulation(

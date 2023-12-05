@@ -5,6 +5,7 @@ class Environment:
     def __init__(self, probabilities, opt_value=None):
         self.probabilities = probabilities
         self.opt_value = opt_value
+        self.optimal_rewards = np.empty((0, 2))
 
     def round(self, pulled_arm):
         reward = np.random.binomial(1, self.probabilities[pulled_arm])
