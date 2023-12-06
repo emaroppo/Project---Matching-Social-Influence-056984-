@@ -1,9 +1,13 @@
-from learners.ucb_learners.ucb_learner import UCBProbLearner
+from learners.ucb_learners.ucb_prob_learner import UCBProbLearner
 from utils.change_detection import CUSUM
 import numpy as np
 
 
 class SWUCBProbLearner(UCBProbLearner):
+    @classmethod
+    def sensitivity_analysis(cls, parameters, n_nodes, n_seeds, graph_structure):
+        return [cls(n_nodes, n_seeds=n_seeds, window_size=i, graph_structure=graph_structure) for i in parameters] 
+
     def __init__(self, n_nodes, n_seeds, window_size, graph_structure=None):
         super().__init__(n_nodes, n_seeds, graph_structure)
         self.window_size = window_size
@@ -37,10 +41,16 @@ class SWUCBProbLearner(UCBProbLearner):
         if self.graph_structure is not None:
             self.confidence[self.graph_structure == 0] = 0
 
-        self.collected_rewards.append(np.sum(self.edge_rewards))
+        self.collected_rewards= np.append(self.collected_rewards, (np.sum(self.edge_rewards)))
 
 
 class CDUCBProbLearner(UCBProbLearner):
+
+    @classmethod
+    def sensitivity_analysis(cls, parameters, n_nodes, n_seeds, graph_structure):
+        return [cls(eps=i, n_nodes=n_nodes, n_seeds=n_seeds) for i in parameters] 
+
+
     def __init__(self, n_nodes, n_seeds, graph_structure=None, M=100, eps=0.05, h=20):
         super().__init__(n_nodes, n_seeds, graph_structure)
         # CUSUM Change Detection

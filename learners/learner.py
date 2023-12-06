@@ -7,7 +7,7 @@ class Learner:
         self.t = 0
         self.rewards_per_arm = [[] for _ in range(n_arms)]
         self.collected_rewards = np.array([])
-        self.expected_rewards = np.empty((0,2))
+        self.expected_rewards = np.empty((0, 2))
 
     def update_observations(self, pulled_arm, reward):
         self.rewards_per_arm[pulled_arm].append(reward)

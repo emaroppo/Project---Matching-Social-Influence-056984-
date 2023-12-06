@@ -1,6 +1,6 @@
 from environments.ns_environment import SocialUnknownAbruptChanges
 from learners.exp3 import EXP3ProbLearner
-from learners.ucb_learners.ucb_learner import UCBProbLearner
+from learners.ucb_learners.ucb_prob_learner import UCBProbLearner
 from utils.metrics import compute_metrics, plot_metrics
 from utils.simulation import influence_simulation
 

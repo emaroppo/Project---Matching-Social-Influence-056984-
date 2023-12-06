@@ -1,9 +1,15 @@
 from environments.ns_environment import SocialNChanges
-from learners.ucb_learners.ucb_learner import UCBProbLearner
+from learners.ucb_learners.ucb_prob_learner import UCBProbLearner
 from learners.ucb_learners.ns_ucb import SWUCBProbLearner, CDUCBProbLearner
-from utils.data_generator import generate_graph
-from utils.metrics import compute_metrics, plot_metrics
 from utils.simulation import influence_simulation
+
+
+def sensitivity_analysis(model, parameters_value, env, n_episodes=365):
+    models = model.sensitivity_analysis(parameters=parameters_value)
+    metrics, models = influence_simulation(
+        models=models, env=env, n_episodes=n_episodes
+    )
+    return metrics, models, env
 
 
 def step_5(graph_probabilities, graph_structure, n_phases=3, n_episodes=365):
@@ -14,22 +20,18 @@ def step_5(graph_probabilities, graph_structure, n_phases=3, n_episodes=365):
     model3 = CDUCBProbLearner(30, 3, graph_structure=graph_structure)
 
     # run simulation
-    all_rewards, all_optimal_rewards, _ = influence_simulation(
-        env, [model1, model2, model3], n_episodes=n_episodes, n_phases=3
+    metrics, models = influence_simulation(
+        env, [model1, model2, model3], n_episodes=n_episodes, n_phases=n_phases
     )
 
-    all_instantaneous_regrets = [
-        compute_metrics(r, o)[2] for r, o in zip(all_rewards, all_optimal_rewards)
-    ]
-    all_cumulative_regrets = [
-        compute_metrics(r, o)[3] for r, o in zip(all_rewards, all_optimal_rewards)
-    ]
+    # check different window sizes
 
-    plot_metrics(
-        all_rewards,
-        all_optimal_rewards,
-        all_instantaneous_regrets,
-        all_cumulative_regrets,
-        model_names=["UCB", "SW UCB", "CD UCB"],
-        env_name="Social Environment",
-    )
+    window_sizes = [60, 90, 120]
+    metrics1, models1 = sensitivity_analysis(SWUCBProbLearner, window_sizes)
+
+    # check different eps values
+
+    eps_values = [0.02, 0.05, 0.07]
+    metrics2, models2 = sensitivity_analysis(CDUCBProbLearner, eps_values)
+
+    return metrics

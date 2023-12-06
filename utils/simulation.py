@@ -1,12 +1,11 @@
 import numpy as np
 from tqdm import tqdm
-from utils.metrics_updated import compute_metrics, plot_metrics
+from utils.metrics import compute_metrics, plot_metrics
 
 
 def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
     all_metrics = []
     for model in models:
-
         max_ = env.opt(3)
 
         for i in tqdm(range(n_episodes)):
@@ -21,25 +20,20 @@ def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
                     max_ = env.opt(3)
 
             exp_reward = env.expected_reward(pulled_arm, 100)
-            if n_phases != 1:
-                exp_reward = exp_reward[0]
 
-            model.expected_rewards = np.append(model.expected_rewards, [exp_reward], axis=0)
+            model.expected_rewards = np.append(
+                model.expected_rewards, [exp_reward], axis=0
+            )
             env.optimal_rewards = np.append(env.optimal_rewards, [max_[:2]], axis=0)
             model.update(episode)
-            
-        metrics = compute_metrics(
-            model, env
-        )
+
+        metrics = compute_metrics(model, env)
         all_metrics.append(metrics)
-        env.optimal_rewards = np.empty((0, 2)) #temporary fix
-    
+        env.optimal_rewards = np.empty((0, 2))  # temporary fix
+
     plot_metrics(all_metrics, env_name="Social Environment")
 
     return all_metrics
-            
-
-        
 
 
 def matching_simulation(
