@@ -45,9 +45,7 @@ def matching_simulation(
     product_classes=[0, 1, 2],
     products_per_class=3,
 ):
-    all_collected_rewards = []
-    all_opts = []
-
+    all_metrics = []  # To store metrics for all models
     for model in models:
         collected_rewards = []
         opts = []
@@ -59,22 +57,33 @@ def matching_simulation(
             )
             customers = class_mapping[episode_active_nodes]
 
-            # pull arm
+            # Pull arm
             pulled_arm = model.pull_arm(episode_active_nodes, customers)
-            # retrieve reward
+            # Retrieve reward
             reward = env.round(pulled_arm)
             reward = [i[1] for i in reward]
             opt = env.opt(customers, products)
             print("Regret: ", opt - np.sum(reward))
-            # update bandit
+            # Update bandit
             model.update(pulled_arm, reward)
             opts.append(opt)
             collected_rewards.append(np.sum(reward))
 
-        all_collected_rewards.append(collected_rewards)
-        all_opts.append(opts)
+            # Metrics collection (similar to influence_simulation)
+            exp_reward = env.expected_reward(pulled_arm)
+            model.expected_rewards = np.append(model.expected_rewards, [exp_reward], axis=0)
+            env.optimal_rewards = np.append(env.optimal_rewards, [opt], axis=0)  # Assuming opt gives the optimal reward for the round
 
-    return np.array(all_collected_rewards), np.array(all_opts)
+        # Compute and store metrics for the current model
+        metrics = compute_metrics(model, env)
+        all_metrics.append(metrics)
+        env.optimal_rewards = np.empty((0,))  # Reset for next model
+
+    # Plot metrics for all models
+    plot_metrics(all_metrics, env_name="Matching Environment")
+
+    return all_metrics
+
 
 
 def joint_simulation(

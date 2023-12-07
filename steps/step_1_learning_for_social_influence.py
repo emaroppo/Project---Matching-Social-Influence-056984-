@@ -7,6 +7,7 @@ from utils.simulation import influence_simulation
 
 def step_1(graph_probabilities, graph_structure, n_episodes=365):
     env = SocialEnvironment(graph_probabilities)
+    
 
     # initialise bandit
     model1 = UCBProbLearner(

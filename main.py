@@ -5,14 +5,13 @@ from utils.data_generator import (
 )
 from steps.step_1_learning_for_social_influence import step_1
 from steps.step_2_learning_for_matching import step_2
-
 # from steps.step_3_joint_learning import step_3
 from steps.step_5_two_abrupt_changes import step_5
 
 # from steps.step_6_many_abrupt_changes import step_6
 import numpy as np
 
-n_episodes = 365
+n_episodes = 30
 # set arguments
 n_nodes = 30
 n_seeds = 3
@@ -33,16 +32,18 @@ graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate)
 reward_means, reward_std_dev = generate_reward_parameters(
     n_customer_classes, n_product_classes
 )
-graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate, n_phases=3)
+graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate, n_phases=1)
 
-
-# step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
+"""
+step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
+"""
 
 active_nodes = [
     np.random.choice(30, np.random.randint(6, 12), replace=False)
     for _ in range(n_episodes)
 ]
-"""
+
+
 step_2(
     reward_parameters,
     n_node_classes,
@@ -52,7 +53,8 @@ step_2(
     active_nodes=active_nodes,
     class_mapping=class_mapping,
 )
-"""
+
+graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate, n_phases=3)
 
 step_5(
     graph_probabilities=graph_probabilities,

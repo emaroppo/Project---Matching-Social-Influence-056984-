@@ -10,7 +10,7 @@ def compute_metrics(model, env):
     #calculate instantaneous regret expected value (var[i][0]) and std (var[i][1])
     expected_inst_regret = env.optimal_rewards[:,0] - model.expected_rewards[:,0]
     std_inst_regret = env.optimal_rewards[:,1] + model.expected_rewards[:,1]
-    metrics['instantaneous_regret'] = np.array([expected_inst_regret, std_inst_regret])
+    metrics['instantaneous_regret'] = np.array([expected_inst_regret, std_inst_regret]).T #why do i have to Transpose?
     #calculate cumulative reward expected value (var[i][0]) and std (var[i][1]) (cumsum of expected rewards and std of rewards)
     metrics['cumulative_reward'] = np.cumsum(env.optimal_rewards, axis=0)
     metrics['cumulative_regret'] = np.cumsum(metrics['instantaneous_regret'], axis=0)
@@ -49,4 +49,5 @@ def plot_metrics(metrics_list: List[Dict], env_name=None):
         plt.ylabel(metric_name)
         plt.legend()
         plt.savefig(f'{folder_name}/{metric_name}.png')
+        plt.show()
         plt.close()
