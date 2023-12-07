@@ -24,19 +24,30 @@ class UCBProbLearner(ProbLearner):
         return super().pull_arm(upper_confidence_bound)
 
     def update_confidence(self):
-        self.confidence[self.n_pulls != 0] = np.sqrt(
-            2 * np.log(np.sum(self.n_pulls)) / self.n_pulls[self.n_pulls != 0]
-        )
+        nonzero_pulls = self.n_pulls != 0
+        total_pulls = np.sum(self.n_pulls[nonzero_pulls])
+        if total_pulls > 0:
+            self.confidence[nonzero_pulls] = np.sqrt(
+                2 * np.log(total_pulls) / self.n_pulls[nonzero_pulls]
+            )
 
     def update(self, episode):
         susceptible, activated = episode
         super().update_observations(susceptible, activated)
+
+        # Increment number of pulls and update rewards
         self.n_pulls += susceptible
         self.edge_rewards += activated
-        self.empirical_means[self.n_pulls != 0] = (
-            self.edge_rewards[self.n_pulls != 0] / self.n_pulls[self.n_pulls != 0]
+
+        # Update empirical means for non-zero pulls
+        nonzero_pulls = self.n_pulls != 0
+        self.empirical_means[nonzero_pulls] = (
+            self.edge_rewards[nonzero_pulls] / self.n_pulls[nonzero_pulls]
         )
+
+        # Update confidence values
         self.update_confidence()
 
+        # Handle graph structure if present
         if self.graph_structure is not None:
             self.confidence[self.graph_structure == 0] = 0

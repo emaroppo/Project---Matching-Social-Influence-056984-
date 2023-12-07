@@ -33,26 +33,11 @@ def step_2(
 
     # run simulation
 
-    all_rewards, all_optimal_rewards = matching_simulation(
+    metrics, models = matching_simulation(
         env=env,
         models=[ucb_bandit, ts_bandit],
         n_episodes=n_episodes,
         active_nodes=active_nodes,
         class_mapping=class_mapping,
     )
-
-    all_instantaneous_regrets = [
-        compute_metrics(r, o)[2] for r, o in zip(all_rewards, all_optimal_rewards)
-    ]
-    all_cumulative_regrets = [
-        compute_metrics(r, o)[3] for r, o in zip(all_rewards, all_optimal_rewards)
-    ]
-
-    plot_metrics(
-        all_rewards,
-        all_optimal_rewards,
-        all_instantaneous_regrets,
-        all_cumulative_regrets,
-        model_names=["Model1", "Model2"],
-        env_name="Social Environment",
-    )
+    return metrics, models

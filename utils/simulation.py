@@ -49,6 +49,7 @@ def matching_simulation(
     for model in models:
         collected_rewards = []
         opts = []
+        env.optimal_rewards = np.empty((0, 2))  # Reset for each model
 
         products = product_classes * products_per_class
         for i in tqdm(range(n_episodes)):
@@ -71,8 +72,13 @@ def matching_simulation(
 
             # Metrics collection (similar to influence_simulation)
             exp_reward = env.expected_reward(pulled_arm)
-            model.expected_rewards = np.append(model.expected_rewards, [exp_reward], axis=0)
-            env.optimal_rewards = np.append(env.optimal_rewards, [opt], axis=0)  # Assuming opt gives the optimal reward for the round
+            model.expected_rewards = np.append(
+                model.expected_rewards, [exp_reward], axis=0
+            )
+            env.optimal_rewards = np.concatenate(
+                (env.optimal_rewards, env.opt(customers, product_classes)),
+                axis=0,
+            )  # Assuming opt gives the optimal reward for the round
 
         # Compute and store metrics for the current model
         metrics = compute_metrics(model, env)
@@ -83,7 +89,6 @@ def matching_simulation(
     plot_metrics(all_metrics, env_name="Matching Environment")
 
     return all_metrics
-
 
 
 def joint_simulation(
