@@ -1,7 +1,7 @@
 import numpy as np
 from learners.ts_learners.matching_ts import TSMatching
-from learners.ts_learners.ts_learner import TSProbLearner
-from learners.ucb_learners.ucb_learner import UCBProbLearner
+from learners.ts_learners.ts_prob_learner import TSProbLearner
+from learners.ucb_learners.ucb_prob_learner import UCBProbLearner
 from learners.ucb_learners.matching_ucb import UCBMatching
 from environments.joint_environment import JointEnvironment
 from utils.metrics import compute_metrics, plot_metrics
@@ -46,24 +46,5 @@ def step_3(
         n_episodes=n_exp,
         n_phases=1,
     )
-    all_rewards, all_optimal_rewards = matching
-    all_rewards = np.squeeze(all_rewards)
-    all_optimal_rewards = np.squeeze(all_optimal_rewards)
-    all_instantaneous_regrets = [
-        compute_metrics(r, o)[2] for r, o in zip(all_rewards, all_optimal_rewards)
-    ]
 
-    all_cumulative_regrets = [
-        compute_metrics(r, o)[3] for r, o in zip(all_rewards, all_optimal_rewards)
-    ]
-
-    plot_metrics(
-        all_rewards,
-        all_optimal_rewards,
-        all_instantaneous_regrets,
-        all_cumulative_regrets,
-        model_names=["Model1", "Model2"],
-        env_name="Joint Environment",
-    )
-
-    # check if it should maximise rewards (social & matching) separetely or jointly
+    return social, matching

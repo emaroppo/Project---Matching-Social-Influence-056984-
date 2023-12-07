@@ -11,11 +11,24 @@ class JointEnvironment(Environment):
         self.node_classes = node_classes
         self.t = 0
         self.opt_value = opt_value
+        # Additional attributes for metrics
+        self.active_nodes = None
+        self.expected_rewards = np.empty((0,))
+        self.optimal_rewards = np.empty((0,))
 
     def round(self, pulled_arms):
-        social_reward = self.social_environment.round(pulled_arms)
-        matching_reward = self.matching_environment.round(pulled_arms)
-        return matching_reward
+        social_reward, active_nodes = self.social_environment.round(
+            pulled_arms, return_active_nodes=True
+        )
+        # Track active nodes
+        self.active_nodes = np.where(active_nodes == 1)[0]
+        customer_classes = [self.node_classes[i] for i in self.active_nodes]
+        matching_reward = self.matching_environment.round(pulled_arms, customer_classes)
+        # Collect rewards for metrics
+        self.expected_rewards = np.append(
+            self.expected_rewards, [np.sum(matching_reward)]
+        )
+        return social_reward, matching_reward, self.active_nodes
 
     def opt(self, n_seeds=3, prod_classes=[0, 1, 2] * 3, n_exp=1000):
         if self.opt_value is None:

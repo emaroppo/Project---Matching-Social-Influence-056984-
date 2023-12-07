@@ -5,14 +5,18 @@ from utils.metrics import compute_metrics, plot_metrics
 
 def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
     all_metrics = []
+    all_active_nodes = []
     for model in models:
+        model_active_nodes = []
         max_ = env.opt(3)
 
         for i in tqdm(range(n_episodes)):
             pulled_arm = model.pull_arm()
 
             if n_phases == 1:
-                episode, reward = env.round(pulled_arm, joint=joint)
+                episode, active_nodes = env.round(pulled_arm, joint=joint)
+                if joint:
+                    model_active_nodes.append(active_nodes)
             else:
                 episode, reward, change = env.round(pulled_arm)
                 if change:
@@ -29,9 +33,13 @@ def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
 
         metrics = compute_metrics(model, env)
         all_metrics.append(metrics)
+        if joint:
+            all_active_nodes.append(model_active_nodes)
         env.optimal_rewards = np.empty((0, 2))  # temporary fix
 
     plot_metrics(all_metrics, env_name="Social Environment")
+    if joint:
+        return all_metrics, all_active_nodes
 
     return all_metrics
 
@@ -102,33 +110,33 @@ def joint_simulation(
     products_per_class=3,
 ):
     # Run the influence simulation
-    (
-        all_mean_rewards,
-        all_optimal_rewards,
-        all_models_active_nodes,
-    ) = influence_simulation(
+    influence_metrics, all_active_nodes = influence_simulation(
         env.social_environment, influence_models, n_episodes, n_phases, joint=True
     )
 
-    all_collected_rewards = []
-    all_opts = []
+    # Store metrics for matching models
+    matching_metrics = []
 
     # For each matching model, use the corresponding active nodes from the influence simulation
-    for idx, matching_model in enumerate(matching_models):
-        active_nodes_for_model = all_models_active_nodes[idx]
-        collected_rewards, opts = matching_simulation(
+    for model, active_nodes in zip(matching_models, all_active_nodes):
+        # Run the matching simulation
+        metrics = matching_simulation(
             env.matching_environment,
-            [matching_model],
+            [model],
             n_episodes,
-            active_nodes=active_nodes_for_model,
+            active_nodes=active_nodes,
             class_mapping=class_mapping,
             product_classes=product_classes,
             products_per_class=products_per_class,
         )
-        all_collected_rewards.append(collected_rewards)
-        all_opts.append(opts)
 
-    return (all_mean_rewards, all_optimal_rewards), (all_collected_rewards, all_opts)
+        # Compute and store metrics for the current matching model
+        matching_metrics.append(metrics[0])
+
+    # Optionally, you can plot the combined metrics of influence and matching models
+    plot_metrics(matching_metrics, env_name="Joint Environment")
+
+    return metrics, influence_metrics
 
 
 def merged_matching_simulation_with_features(
