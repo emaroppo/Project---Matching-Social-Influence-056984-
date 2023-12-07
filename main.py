@@ -32,10 +32,10 @@ reward_means, reward_std_dev = generate_reward_parameters(
     n_customer_classes, n_product_classes
 )
 
-"""
-step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
-"""
 
+step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
+
+# replace with nodes generated from best arm
 active_nodes = [
     np.random.choice(30, np.random.randint(6, 12), replace=False)
     for _ in range(n_episodes)

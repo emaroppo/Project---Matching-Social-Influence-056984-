@@ -1,11 +1,9 @@
-import numpy as np
 from learners.ts_learners.matching_ts import TSMatching
 from learners.ts_learners.ts_prob_learner import TSProbLearner
 from learners.ucb_learners.ucb_prob_learner import UCBProbLearner
 from learners.ucb_learners.matching_ucb import UCBMatching
 from environments.joint_environment import JointEnvironment
-from utils.metrics import compute_metrics, plot_metrics
-from utils.simulation import joint_simulation
+from simulations.joint import joint_simulation
 
 
 def step_3(

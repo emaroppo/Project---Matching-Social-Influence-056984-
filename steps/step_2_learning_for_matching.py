@@ -1,9 +1,7 @@
 from environments.matching_environment import MatchingEnvironment2
 from learners.ucb_learners.matching_ucb import UCBMatching
 from learners.ts_learners.matching_ts import TSMatching
-from utils.metrics import compute_metrics, plot_metrics
-from utils.simulation import matching_simulation
-import numpy as np
+from simulations.matching import matching_simulation
 
 
 def step_2(

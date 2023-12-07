@@ -1,7 +1,7 @@
 from environments.ns_environment import SocialNChanges
 from learners.ucb_learners.ucb_prob_learner import UCBProbLearner
 from learners.ucb_learners.ns_ucb import SWUCBProbLearner, CDUCBProbLearner
-from utils.simulation import influence_simulation
+from simulations.influence import influence_simulation
 
 
 def sensitivity_analysis(model, parameters_value, env, n_episodes=30):
