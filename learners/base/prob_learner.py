@@ -1,4 +1,4 @@
-from learners.learner import Learner
+from learners.base.learner import Learner
 from environments.social_environment import SocialEnvironment
 import numpy as np
 

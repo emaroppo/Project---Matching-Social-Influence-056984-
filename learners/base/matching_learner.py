@@ -1,4 +1,4 @@
-from learners.learner import Learner
+from learners.base.learner import Learner
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 

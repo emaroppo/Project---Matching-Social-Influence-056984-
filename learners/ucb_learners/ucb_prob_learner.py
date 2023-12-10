@@ -1,4 +1,4 @@
-from learners.prob_learner import ProbLearner
+from learners.base.prob_learner import ProbLearner
 import numpy as np
 
 

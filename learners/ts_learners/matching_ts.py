@@ -1,4 +1,4 @@
-from learners.matching_learner import MatchingLearner
+from learners.base.matching_learner import MatchingLearner
 import numpy as np
 
 
