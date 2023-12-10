@@ -26,7 +26,7 @@ def matching_simulation(
             customers = class_mapping[episode_active_nodes]
 
             # Pull arm
-            pulled_arm = model.pull_arm(episode_active_nodes, customers)
+            pulled_arm = model.pull_arm(customers)
             # Retrieve reward
             reward = env.round(pulled_arm)
             reward = [i[1] for i in reward]

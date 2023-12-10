@@ -12,8 +12,7 @@ class MatchingLearner(Learner):
         self.n_product_classes = n_product_classes
         self.n_products_per_class = n_products_per_class
 
-    def pull_arm(self, parameters, active_customers, customer_classes):
-        active_customers = active_customers.reshape(-1)
+    def pull_arm(self, parameters, customer_classes, context=False):
         customer_classes = customer_classes.reshape(-1)
         available_matches = np.repeat(
             parameters[customer_classes, :],
@@ -21,15 +20,26 @@ class MatchingLearner(Learner):
             axis=1,
         )
         row_ind, col_ind = linear_sum_assignment(-available_matches)
-        best_arms_global = [
-            (
-                customer_classes[row]
-                if row < len(customer_classes)
-                else self.n_customer_classes,
-                col // 3,
-            )
-            for row, col in zip(row_ind, col_ind)
-        ]
+
+        if context:
+            best_arms_global = [
+                (
+                    row if row < len(customer_classes) else self.n_customer_classes,
+                    col // 3,
+                )
+                for row, col in zip(row_ind, col_ind)
+            ]
+
+        else:
+            best_arms_global = [
+                (
+                    customer_classes[row]
+                    if row < len(customer_classes)
+                    else self.n_customer_classes,
+                    col // 3,
+                )
+                for row, col in zip(row_ind, col_ind)
+            ]
         return best_arms_global
 
     def update_observations(self, pulled_arms, rewards):

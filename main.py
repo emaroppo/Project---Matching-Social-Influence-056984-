@@ -8,6 +8,7 @@ from steps.step_2_learning_for_matching import step_2
 from steps.step_3_joint_learning import step_3
 from steps.step_5_two_abrupt_changes import step_5
 from steps.step_6_many_abrupt_changes import step_6
+
 import numpy as np
 
 n_episodes = 30
@@ -35,7 +36,7 @@ reward_means, reward_std_dev = generate_reward_parameters(
 
 step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
 
-# replace with nodes generated from best arm
+# TO DO: replace with nodes generated from best arm
 active_nodes = [
     np.random.choice(30, np.random.randint(6, 12), replace=False)
     for _ in range(n_episodes)

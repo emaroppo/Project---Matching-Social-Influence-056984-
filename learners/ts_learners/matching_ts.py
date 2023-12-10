@@ -33,11 +33,9 @@ class TSMatching(MatchingLearner):
         ] = theta_sample
         return extended_theta_sample
 
-    def pull_arm(self, active_customers, customer_classes):
+    def pull_arm(self, customer_classes, context=False):
         theta_sample = self._compute_extended_theta_sample()
-        best_arms_global = super().pull_arm(
-            theta_sample, active_customers, customer_classes
-        )
+        best_arms_global = super().pull_arm(theta_sample, customer_classes, context)
         return best_arms_global
 
     def update(self, pulled_arms, rewards):

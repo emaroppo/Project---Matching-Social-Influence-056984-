@@ -1,13 +1,26 @@
 from environments.environment import Environment
 from environments.social_environment import SocialEnvironment
-from environments.matching_environment import MatchingEnvironment2
+from environments.matching_environment import MatchingEnvironment
+from environments.matching_environment_context import MatchingEnvironmentContext
 import numpy as np
 
 
 class JointEnvironment(Environment):
-    def __init__(self, probabilities, reward_parameters, node_classes, opt_value=None):
+    def __init__(
+        self,
+        probabilities,
+        reward_parameters,
+        node_classes,
+        opt_value=None,
+        context=False,
+    ):
         self.social_environment = SocialEnvironment(probabilities)
-        self.matching_environment = MatchingEnvironment2(reward_parameters)
+        if context:
+            self.matching_environment = MatchingEnvironmentContext(
+                reward_parameters, node_classes
+            )
+        else:
+            self.matching_environment = MatchingEnvironment(reward_parameters)
         self.node_classes = node_classes
         self.t = 0
         self.opt_value = opt_value

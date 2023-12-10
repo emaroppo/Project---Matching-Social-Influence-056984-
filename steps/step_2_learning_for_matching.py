@@ -1,4 +1,4 @@
-from environments.matching_environment import MatchingEnvironment2
+from environments.matching_environment import MatchingEnvironment
 from learners.ucb_learners.matching_ucb import UCBMatching
 from learners.ts_learners.matching_ts import TSMatching
 from simulations.matching import matching_simulation
@@ -13,7 +13,7 @@ def step_2(
     active_nodes=None,
     class_mapping=None,
 ):
-    env = MatchingEnvironment2(reward_parameters=reward_parameters)
+    env = MatchingEnvironment(reward_parameters=reward_parameters)
 
     # initialize bandit
     ucb_bandit = UCBMatching(
