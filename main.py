@@ -20,6 +20,8 @@ edge_rate = 0.2
 
 # feature mapping
 def feature_mapping(features):
+    #temporary fix
+    features = features.reshape(1,2)
     if features[0][0] == 1:  # (1, 0), (1, 1) -> 0
         return 0
     elif features[0][1] == 1:  # (0, 1) -> 1
@@ -33,7 +35,7 @@ n_product_classes = 3
 n_customer_classes = 3
 n_products_per_class = 3
 reward_parameters = generate_reward_parameters(n_customer_classes=n_customer_classes, n_product_classes=n_product_classes)
-customer_features, customer_labels = generate_customer_classes(n_customer_classes, 30)
+customer_features, customer_labels = generate_customer_classes(feature_mapping, 30)
 
 # generate graph
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate)
