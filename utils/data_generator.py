@@ -39,5 +39,5 @@ def generate_reward_parameters(
 def generate_customer_classes(feature_mapping, n_nodes):
     # generate customer classes
     customer_features = np.random.randint(0, 2, size=(n_nodes, 2))
-    customer_labels = np.apply_along_axis(feature_mapping, 1, customer_features)
+    customer_labels = [feature_mapping(t) for t in customer_features]
     return customer_features, customer_labels
