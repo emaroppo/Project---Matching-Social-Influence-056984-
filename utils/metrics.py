@@ -20,7 +20,7 @@ def compute_metrics(model, env):
 
 def plot_metrics(metrics_list: List[Dict], env_name=None):
     # Create a new directory for saving the plots
-    folder_name = f"run_{int(time.time())}"
+    folder_name = f"plots/run_{int(time.time())}"
     os.makedirs(folder_name, exist_ok=True)
 
     # Determine the set of all metric names across all models
