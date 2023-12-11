@@ -22,11 +22,12 @@ def step_6_inner(env, graph_structure, n_nodes=30, n_phases=5, n_episodes=365):
 
 def step_6(graph_probabilities, graph_structure, n_episodes=365):
     # define environments
-    env1 = SocialUnknownAbruptChanges(
-        graph_probabilities, horizon=n_episodes, n_phases=5, change_prob=0.2
+    env1 = SocialNChanges(graph_probabilities, n_phases=3)
+    
+
+    env2 = SocialUnknownAbruptChanges(
+        graph_probabilities, n_episodes=n_episodes, n_phases=5, change_prob=0.2
     )
 
-    env2 = SocialNChanges(graph_probabilities, n_phases=3)
-
-    step_6_inner(env1, graph_structure=graph_structure, n_nodes=30)
-    step_6_inner(env2, graph_structure=graph_structure, n_nodes=30)
+    step_6_inner(env1, graph_structure=graph_structure, n_nodes=30, n_phases=3, n_episodes=n_episodes)
+    step_6_inner(env2, graph_structure=graph_structure, n_nodes=30, n_phases=5, n_episodes=n_episodes)

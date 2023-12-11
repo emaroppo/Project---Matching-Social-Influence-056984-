@@ -95,7 +95,7 @@ class SocialUnknownAbruptChanges(SocialEnvironment):
             if self.t == self.phase_changes[self.curr_phase]:
                 print("phase change!")
                 self.curr_phase += 1
-                self.probabilities = self.phase_probabilities[self.curr_phase]
+                self.probabilities = self.phase_probabilities[self.curr_phase % len(self.phase_probabilities)]
                 change = True
 
         episode, reward = super().round(pulled_arms, joint=joint)

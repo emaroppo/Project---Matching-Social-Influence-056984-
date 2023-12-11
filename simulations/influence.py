@@ -41,4 +41,4 @@ def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
     if joint:
         return all_metrics, all_active_nodes
 
-    return all_metrics
+    return all_metrics, models

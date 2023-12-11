@@ -13,11 +13,11 @@ class UCBMatching(MatchingLearner):
         self.n_pulls = np.zeros((n_customer_classes + 1, n_product_classes + 1))
         self.confidence = np.full((n_customer_classes + 1, n_product_classes + 1), 10e4)
 
-    def pull_arm(self, active_customers, customer_classes):
+    def pull_arm(self, customer_classes):
         # Compute upper confidence bounds
         upper_confidence_bound = self.empirical_means + self.confidence
         indices = super().pull_arm(
-            upper_confidence_bound, active_customers, customer_classes
+            upper_confidence_bound, customer_classes
         )
         return indices
 

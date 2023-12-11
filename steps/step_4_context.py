@@ -29,7 +29,7 @@ def step_4(
 
     # initialise environment
     joint_env = JointEnvironment(
-        graph_probabilities, reward_parameters, feature_mapping
+        graph_probabilities, reward_parameters, feature_mapping, context=True
     )
 
     social, matching = joint_simulation(

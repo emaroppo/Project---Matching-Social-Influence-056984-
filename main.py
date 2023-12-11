@@ -36,18 +36,16 @@ n_customer_classes = 3
 n_products_per_class = 3
 reward_parameters = generate_reward_parameters(n_customer_classes=n_customer_classes, n_product_classes=n_product_classes)
 customer_features, customer_labels = generate_customer_classes(feature_mapping, 30)
+customer_labels = np.array(customer_labels)
 
 # generate graph
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate)
 
-step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
+metrics, models, env= step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
 
-# TO DO: replace with nodes generated from best arm
-active_nodes = [
-    np.random.choice(30, np.random.randint(6, 12), replace=False)
-    for _ in range(n_episodes)
-]
+best_arm = models[0].pull_arm()
 
+active_nodes = [env.round(best_arm, joint=True)[1] for _ in range(n_episodes)]
 
 step_2(
     reward_parameters,
@@ -98,6 +96,5 @@ step_5(
 step_6(
     graph_probabilities=graph_probabilities,
     graph_structure=graph_structure,
-    n_phases=3,
     n_episodes=n_episodes,
 )
