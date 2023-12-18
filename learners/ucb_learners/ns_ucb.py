@@ -6,12 +6,16 @@ from utils.change_detection import CUSUM
 class SWUCBProbLearner(UCBProbLearner):
     @classmethod
     def sensitivity_analysis(cls, parameters, n_nodes, n_seeds, graph_structure):
-        return [
+        models = [
             cls(
                 n_nodes, n_seeds=n_seeds, window_size=i, graph_structure=graph_structure
             )
             for i in parameters
         ]
+        for model, parameter in zip(models, parameters):
+            model.name = f"SW-UCB (window_size={parameter})"
+
+        return models
 
     def __init__(self, n_nodes, n_seeds, window_size, graph_structure=None):
         super().__init__(n_nodes, n_seeds, graph_structure)
@@ -38,8 +42,10 @@ class SWUCBProbLearner(UCBProbLearner):
 class CDUCBProbLearner(UCBProbLearner):
     @classmethod
     def sensitivity_analysis(cls, parameters, n_nodes, n_seeds, graph_structure):
-        return [cls(eps=i, n_nodes=n_nodes, n_seeds=n_seeds) for i in parameters]
-
+        models = [cls(eps=i, n_nodes=n_nodes, n_seeds=n_seeds) for i in parameters]
+        for model, parameter in zip(models, parameters):
+            model.name = f"CD-UCB (eps={parameter})"
+        return models
     def __init__(self, n_nodes, n_seeds, graph_structure=None, M=100, eps=0.05, h=20):
         super().__init__(n_nodes, n_seeds, graph_structure)
         self.change_detection = CUSUM(n_nodes, M, eps, h)

@@ -4,6 +4,7 @@ import numpy as np
 class Learner:
     def __init__(self, n_arms) -> None:
         self.n_arms = n_arms
+        self.name=self.__class__.__name__
         self.t = 0
         self.rewards_per_arm = [[] for _ in range(n_arms)]
         self.collected_rewards = np.array([])
