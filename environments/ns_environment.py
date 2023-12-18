@@ -49,6 +49,7 @@ class SocialNChanges(SocialEnvironment):
         self.phase_changes.sort()
         self.curr_phase = 0
         self.t = 0
+        print(self.phase_changes)
 
     def round(self, pulled_arms, joint=False):
         # check if phase changes at t
@@ -69,34 +70,33 @@ class SocialNChanges(SocialEnvironment):
 
 class SocialUnknownAbruptChanges(SocialEnvironment):
     def __init__(
-        self, phase_probabilities, n_episodes=365, n_phases=5, change_prob=0.3
+        self, phase_probabilities, n_episodes=365, n_phases=5, change_prob=0.1
     ):
         curr_probabilities = phase_probabilities[0]
         super().__init__(curr_probabilities)
+        self.n_phases = n_phases
         self.phase_probabilities = phase_probabilities
 
         # Generate random phase change points, but ensure they happen with at least the change_prob chance.
-        self.phase_changes = []
-        t = 0
-        for _ in range(n_phases - 1):
-            delta = np.random.geometric(change_prob)
-            t += delta
-            if t >= n_episodes:
-                break
-            self.phase_changes.append(t)
+        self.phase_changes = np.random.binomial(1, change_prob, n_episodes)
+        #turn into list of indices of phase changes
+        self.phase_changes = list(np.argwhere(self.phase_changes == 1).flatten())
 
+        t = 0
+        print(self.phase_changes)
         self.curr_phase = 0
         self.t = 0
 
     def round(self, pulled_arms, joint=False):
         # Check if phase changes at t
         change = False
-        if self.curr_phase < len(self.phase_changes):
-            if self.t == self.phase_changes[self.curr_phase]:
-                print("phase change!")
-                self.curr_phase += 1
-                self.probabilities = self.phase_probabilities[self.curr_phase % len(self.phase_probabilities)]
-                change = True
+        if self.t in self.phase_changes:
+            print("phase change!")
+            self.curr_phase += 1
+            if self.curr_phase >= self.n_phases-1:
+                self.curr_phase = 0
+            self.probabilities = self.phase_probabilities[self.curr_phase]
+            change = True
 
         episode, reward = super().round(pulled_arms, joint=joint)
 

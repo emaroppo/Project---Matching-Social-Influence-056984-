@@ -12,7 +12,8 @@ from steps.step_6_many_abrupt_changes import step_6
 
 import numpy as np
 
-n_episodes = 30
+n_episodes = 365
+
 # set arguments
 n_nodes = 30
 n_seeds = 3
@@ -40,7 +41,7 @@ customer_labels = np.array(customer_labels)
 
 # generate graph
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate)
-
+'''
 metrics, models, env= step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
 
 best_arm = models[0].pull_arm()
@@ -92,7 +93,8 @@ step_5(
     n_phases=3,
     n_episodes=n_episodes,
 )
-
+'''
+graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate, n_phases=5)
 step_6(
     graph_probabilities=graph_probabilities,
     graph_structure=graph_structure,

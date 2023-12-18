@@ -36,6 +36,7 @@ def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
         if joint:
             all_active_nodes.append(model_active_nodes)
         env.optimal_rewards = np.empty((0, 2))  # temporary fix
+        env.t=0
 
     plot_metrics(all_metrics, env_name="Social Environment")
     if joint:
