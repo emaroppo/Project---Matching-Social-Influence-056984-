@@ -31,7 +31,7 @@ def matching_simulation(
             reward = env.round(pulled_arm)
             reward = [i[1] for i in reward]
             opt = env.opt(customers, products)
-            print("Regret: ", opt - np.sum(reward))
+            print("Regret: ", opt[0][0] - np.sum(reward))
             # Update bandit
             model.update(pulled_arm, reward)
             opts.append(opt)
