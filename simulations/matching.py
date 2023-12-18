@@ -1,6 +1,6 @@
 from tqdm import tqdm
 import numpy as np
-from utils.metrics import compute_metrics, plot_metrics
+from utils.metrics import compute_metrics, plot_metrics, plot_matching_rewards
 
 
 def matching_simulation(
@@ -50,6 +50,8 @@ def matching_simulation(
         # Compute and store metrics for the current model
         metrics = compute_metrics(model, env)
         all_metrics.append(metrics)
+        plot_matching_rewards(env, learner=model)
+
         env.optimal_rewards = np.empty((0,))  # Reset for next model
 
     # Plot metrics for all models

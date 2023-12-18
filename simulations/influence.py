@@ -1,6 +1,11 @@
 from tqdm import tqdm
 import numpy as np
-from utils.metrics import compute_metrics, plot_metrics
+from utils.metrics import (
+    compute_metrics,
+    plot_metrics,
+    plot_network,
+    plot_influence_probabilities,
+)
 
 
 def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
@@ -35,10 +40,12 @@ def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
         all_metrics.append(metrics)
         if joint:
             all_active_nodes.append(model_active_nodes)
+        plot_influence_probabilities(env, learner=model, n_phases=n_phases)
         env.optimal_rewards = np.empty((0, 2))  # temporary fix
-        env.t=0
+        env.t = 0
 
     plot_metrics(all_metrics, env_name="Social Environment")
+    plot_network(env, all_active_nodes)
     if joint:
         return all_metrics, all_active_nodes
 

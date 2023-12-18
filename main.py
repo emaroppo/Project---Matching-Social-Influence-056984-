@@ -3,6 +3,7 @@ from utils.data_generator import (
     generate_reward_parameters,
     generate_customer_classes,
 )
+from utils.metrics import plot_network
 from steps.step_1_learning_for_social_influence import step_1
 from steps.step_2_learning_for_matching import step_2
 from steps.step_3_joint_learning import step_3
@@ -19,10 +20,11 @@ n_nodes = 30
 n_seeds = 3
 edge_rate = 0.2
 
+
 # feature mapping
 def feature_mapping(features):
-    #temporary fix
-    features = features.reshape(1,2)
+    # temporary fix
+    features = features.reshape(1, 2)
     if features[0][0] == 1:  # (1, 0), (1, 1) -> 0
         return 0
     elif features[0][1] == 1:  # (0, 1) -> 1
@@ -35,14 +37,21 @@ def feature_mapping(features):
 n_product_classes = 3
 n_customer_classes = 3
 n_products_per_class = 3
-reward_parameters = generate_reward_parameters(n_customer_classes=n_customer_classes, n_product_classes=n_product_classes)
+reward_parameters = generate_reward_parameters(
+    n_customer_classes=n_customer_classes, n_product_classes=n_product_classes
+)
 customer_features, customer_labels = generate_customer_classes(feature_mapping, 30)
 customer_labels = np.array(customer_labels)
 
 # generate graph
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate)
-'''
-metrics, models, env= step_1(graph_probabilities, graph_structure, n_episodes=n_episodes)
+
+plot_network(graph_probabilities, customer_labels)
+
+
+metrics, models, env = step_1(
+    graph_probabilities, graph_structure, n_episodes=n_episodes
+)
 
 best_arm = models[0].pull_arm()
 
@@ -93,7 +102,6 @@ step_5(
     n_phases=3,
     n_episodes=n_episodes,
 )
-'''
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate, n_phases=5)
 step_6(
     graph_probabilities=graph_probabilities,

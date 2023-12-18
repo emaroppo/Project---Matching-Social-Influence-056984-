@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import networkx as nx
 import time
 import pickle
 from typing import List, Dict
@@ -14,7 +15,7 @@ def compute_metrics(model, env, to_file=True):
 
     # calculate instantaneous regret expected value (var[i][0]) and std (var[i][1])
     expected_inst_regret = env.optimal_rewards[:, 0] - model.expected_rewards[:, 0]
-    #min regret is 0
+    # min regret is 0
     expected_inst_regret[expected_inst_regret < 0] = 0
     std_inst_regret = np.sqrt(
         env.optimal_rewards[:, 1] ** 2 + model.expected_rewards[:, 1] ** 2
@@ -37,26 +38,25 @@ def compute_metrics(model, env, to_file=True):
         [expected_cumulative_regret, std_cumulative_regret]
     ).T
 
-    #save influence probability / expected rewards estimates
-    if 'UCB' in metrics["model_name"]:
-        metrics['estimates'] = model.empirical_means + model.confidence
+    # save influence probability / expected rewards estimates
+    if "UCB" in metrics["model_name"]:
+        metrics["estimates"] = model.empirical_means + model.confidence
 
-    if 'TS' in metrics["model_name"]:
-        if 'Prob' in metrics["model_name"]:
+    if "TS" in metrics["model_name"]:
+        if "Prob" in metrics["model_name"]:
             probs = model.beta_parameters[:, :, 0] / (
                 model.beta_parameters[:, :, 0] + model.beta_parameters[:, :, 1]
             )
             if model.graph_structure is not None:
-                metrics['estimates'] = probs*model.graph_structure
+                metrics["estimates"] = probs * model.graph_structure
 
-        elif 'Matching' in metrics['model_name']:
-            metrics['estimates'] = model.mu
+        elif "Matching" in metrics["model_name"]:
+            metrics["estimates"] = model.mu
 
-    if 'Matching' in env.__class__.__name__:
-        metrics['real_values'] = env.reward_parameters
-    elif 'Social' in env.__class__.__name__:
-        metrics['real_values'] = env.probabilities
-
+    if "Matching" in env.__class__.__name__:
+        metrics["real_values"] = env.reward_parameters
+    elif "Social" in env.__class__.__name__:
+        metrics["real_values"] = env.probabilities
 
     if to_file:
         with open(f"metrics/{metrics['model_name']}_{time.time()}.pkl", "wb") as f:
@@ -76,7 +76,7 @@ def plot_metrics(metrics_list: List[Dict], env_name=None):
 
     # Plot each metric
     for metric_name in metric_names:
-        if metric_name in ["model_name", 'optimal_reward', 'real_values', 'estimates']:
+        if metric_name in ["model_name", "optimal_reward", "real_values", "estimates"]:
             continue
         plt.figure()
 
@@ -86,7 +86,7 @@ def plot_metrics(metrics_list: List[Dict], env_name=None):
                 expected_values = model_metrics[metric_name][:, 0]
                 std_devs = model_metrics[metric_name][:, 1]
                 timesteps = range(len(expected_values))
-                #extract optimal rewards
+                # extract optimal rewards
 
                 if metric_name == "instantaneous_reward":
                     optimal_rewards = model_metrics["optimal_reward"][:, 0]
@@ -97,7 +97,7 @@ def plot_metrics(metrics_list: List[Dict], env_name=None):
                         color="black",
                         linestyle="dashed",
                     )
-                #plot optimal reward only if it is instantaneous reward
+                # plot optimal reward only if it is instantaneous reward
 
                 # Plot the expected values
                 plt.plot(
@@ -124,3 +124,96 @@ def plot_metrics(metrics_list: List[Dict], env_name=None):
         plt.savefig(f"{folder_name}/{metric_name}.png")
         plt.show()
         plt.close()
+
+
+def plot_network(matrix, labels, filename="plots/network_probs.png", dpi=300):
+    # Validate that the number of labels matches the size of the matrix
+    filename = f"plots/network_probs_{time.time()}.png"
+    if len(labels) != len(matrix):
+        raise ValueError("The number of labels must match the number of nodes.")
+
+    # Create a graph
+    G = nx.DiGraph()
+
+    # Add nodes with labels
+    for i, label in enumerate(labels):
+        G.add_node(i, label=label)
+
+    # Add edges with weights
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if matrix[i][j] != 0:
+                G.add_edge(i, j, weight=round(matrix[i][j], 3))
+
+    # Position nodes using the Kamada-Kawai layout for better spacing
+    pos = nx.kamada_kawai_layout(G)
+
+    # Draw the nodes, smaller size
+    nx.draw_networkx_nodes(G, pos, node_size=300)
+
+    # Draw the edges
+    nx.draw_networkx_edges(G, pos)
+
+    # Label nodes with custom labels
+    node_labels = nx.get_node_attributes(G, "label")
+    nx.draw_networkx_labels(G, pos, labels=node_labels, font_size=8)
+
+    # Draw edge labels (weights)
+    edge_labels = nx.get_edge_attributes(G, "weight")
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6)
+
+    # Save the plot with high resolution
+    plt.savefig(filename, dpi=dpi)
+
+    # Show the plot
+    plt.show()
+
+
+def plot_heatmap(array, use_log_scale=False):
+    if use_log_scale:
+        # Apply logarithmic scaling (adding a small value to avoid log(0))
+        data = np.log(array + np.abs(array.min()) + 1e-5)
+    else:
+        # Use percentile-based scaling
+        vmin, vmax = np.percentile(array, [5, 95])
+        data = np.clip(array, vmin, vmax)
+
+    plt.imshow(data, cmap="hot", interpolation="nearest")
+    plt.colorbar()
+    plt.savefig(f"plots/heatmap_{time.time()}.png")
+    plt.show()
+
+
+def plot_influence_probabilities(env, learner, n_phases):
+    if n_phases > 1:
+        real_values = env.probabilities[-1]
+    else:
+        real_values = env.probabilities
+
+    real_values = env.probabilities
+    if "UCB" in learner.name:
+        estimates = learner.empirical_means + learner.confidence
+    elif "TS" in learner.name:
+        estimates = learner.beta_parameters[:, :, 0] / (
+            learner.beta_parameters[:, :, 0] + learner.beta_parameters[:, :, 1]
+        )
+        if learner.graph_structure is not None:
+            estimates = estimates * learner.graph_structure
+
+    diff = estimates - real_values
+    plot_heatmap(real_values)
+    plot_heatmap(estimates)
+    plot_heatmap(diff)
+
+
+def plot_matching_rewards(env, learner):
+    real_values = env.reward_parameters
+    if "UCB" in learner.name:
+        estimates = learner.empirical_means + learner.confidence
+    elif "TS" in learner.name:
+        estimates = learner.mu
+
+    diff = estimates - real_values
+    plot_heatmap(real_values)
+    plot_heatmap(estimates)
+    plot_heatmap(diff)
