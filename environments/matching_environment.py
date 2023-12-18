@@ -100,4 +100,8 @@ class MatchingEnvironment(Environment):
         return np.array([[reward, std_dev]])
 
     def expected_reward(self, pulled_arm):
-        return self.reward_matrix[pulled_arm[0], pulled_arm[1]]
+        all_exp_rewards = [self.reward_parameters[pair[0], pair[1], 0] for pair in pulled_arm if (pair[0] != self.reward_parameters.shape[0] and pair[1] != self.reward_parameters.shape[1])]
+        all_exp_rewards_std= [self.reward_parameters[pair[0], pair[1], 1] for pair in pulled_arm if (pair[0] != self.reward_parameters.shape[0] and pair[1] != self.reward_parameters.shape[1])]
+        total_rewards = np.sum(all_exp_rewards)
+        total_std = np.sqrt(np.sum(np.square(all_exp_rewards_std)))
+        return np.array([total_rewards, total_std])
