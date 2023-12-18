@@ -14,6 +14,7 @@ def joint_simulation(
     class_mapping=None,
     product_classes=[0, 1, 2],
     products_per_class=3,
+    skip_expected_rewards=False,
 ):
     # Run the influence simulation
     influence_metrics, all_active_nodes = influence_simulation(
@@ -34,6 +35,7 @@ def joint_simulation(
             class_mapping=class_mapping,
             product_classes=product_classes,
             products_per_class=products_per_class,
+            skip_expected_rewards=skip_expected_rewards,
         )
 
         # Compute and store metrics for the current matching model

@@ -45,7 +45,6 @@ def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
         env.t = 0
 
     plot_metrics(all_metrics, env_name="Social Environment")
-    plot_network(env, all_active_nodes)
     if joint:
         return all_metrics, all_active_nodes
 

@@ -3,7 +3,7 @@ from utils.data_generator import (
     generate_reward_parameters,
     generate_customer_classes,
 )
-from utils.metrics import plot_network
+from utils.metrics import plot_network, plot_reward_distributions
 from steps.step_1_learning_for_social_influence import step_1
 from steps.step_2_learning_for_matching import step_2
 from steps.step_3_joint_learning import step_3
@@ -40,6 +40,8 @@ n_products_per_class = 3
 reward_parameters = generate_reward_parameters(
     n_customer_classes=n_customer_classes, n_product_classes=n_product_classes
 )
+
+plot_reward_distributions(reward_parameters)
 customer_features, customer_labels = generate_customer_classes(feature_mapping, 30)
 customer_labels = np.array(customer_labels)
 

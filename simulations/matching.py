@@ -11,6 +11,7 @@ def matching_simulation(
     class_mapping=None,
     product_classes=[0, 1, 2],
     products_per_class=3,
+    skip_expected_rewards=False,
 ):
     all_metrics = []  # To store metrics for all models
     for model in models:
@@ -50,7 +51,8 @@ def matching_simulation(
         # Compute and store metrics for the current model
         metrics = compute_metrics(model, env)
         all_metrics.append(metrics)
-        plot_matching_rewards(env, learner=model)
+        if not skip_expected_rewards:
+            plot_matching_rewards(env, learner=model)
 
         env.optimal_rewards = np.empty((0,))  # Reset for next model
 

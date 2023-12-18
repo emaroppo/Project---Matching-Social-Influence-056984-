@@ -5,6 +5,7 @@ import networkx as nx
 import time
 import pickle
 from typing import List, Dict
+import scipy.stats as stats
 
 
 def compute_metrics(model, env, to_file=True):
@@ -64,7 +65,7 @@ def compute_metrics(model, env, to_file=True):
     return metrics
 
 
-def plot_metrics(metrics_list: List[Dict], env_name=None):
+def plot_metrics(metrics_list: List[Dict], env_name=None, show=False):
     # Create a new directory for saving the plots
     folder_name = f"plots/run_{int(time.time())}"
     os.makedirs(folder_name, exist_ok=True)
@@ -122,11 +123,14 @@ def plot_metrics(metrics_list: List[Dict], env_name=None):
         plt.ylabel(" ".join(metric_name.split("_")).title())
         plt.legend()
         plt.savefig(f"{folder_name}/{metric_name}.png")
-        plt.show()
+        if show:
+            plt.show()
         plt.close()
 
 
-def plot_network(matrix, labels, filename="plots/network_probs.png", dpi=300):
+def plot_network(
+    matrix, labels, filename="plots/network_probs.png", dpi=300, show=False
+):
     # Validate that the number of labels matches the size of the matrix
     filename = f"plots/network_probs_{time.time()}.png"
     if len(labels) != len(matrix):
@@ -166,10 +170,12 @@ def plot_network(matrix, labels, filename="plots/network_probs.png", dpi=300):
     plt.savefig(filename, dpi=dpi)
 
     # Show the plot
-    plt.show()
+    if show:
+        plt.show()
+    plt.close()
 
 
-def plot_heatmap(array, use_log_scale=False):
+def plot_heatmap(array, title=None, use_log_scale=False, show=False):
     if use_log_scale:
         # Apply logarithmic scaling (adding a small value to avoid log(0))
         data = np.log(array + np.abs(array.min()) + 1e-5)
@@ -177,11 +183,14 @@ def plot_heatmap(array, use_log_scale=False):
         # Use percentile-based scaling
         vmin, vmax = np.percentile(array, [5, 95])
         data = np.clip(array, vmin, vmax)
-
+    if title is not None:
+        plt.title(title)
     plt.imshow(data, cmap="hot", interpolation="nearest")
     plt.colorbar()
     plt.savefig(f"plots/heatmap_{time.time()}.png")
-    plt.show()
+    if show:
+        plt.show()
+    plt.close()
 
 
 def plot_influence_probabilities(env, learner, n_phases):
@@ -201,19 +210,57 @@ def plot_influence_probabilities(env, learner, n_phases):
             estimates = estimates * learner.graph_structure
 
     diff = estimates - real_values
-    plot_heatmap(real_values)
-    plot_heatmap(estimates)
-    plot_heatmap(diff)
+    plot_heatmap(real_values, title="Real Probabilities")
+    plot_heatmap(estimates, title="Estimated Probabilities")
+    if "UCB" in learner.name:
+        plot_heatmap(learner.empirical_means, title="Empirical Means")
+        plot_heatmap(
+            learner.empirical_means - real_values, title="Delta (Empirical Means)"
+        )
+    plot_heatmap(diff, title="Delta (Estimated Probabilities)")
 
 
 def plot_matching_rewards(env, learner):
-    real_values = env.reward_parameters
+    real_values = env.reward_parameters[:, :, 0]
+
     if "UCB" in learner.name:
         estimates = learner.empirical_means + learner.confidence
+        estimates = estimates[:3, :3]
     elif "TS" in learner.name:
         estimates = learner.mu
+        estimates = estimates[:3, :3]
 
     diff = estimates - real_values
-    plot_heatmap(real_values)
-    plot_heatmap(estimates)
-    plot_heatmap(diff)
+    plot_heatmap(real_values, title="Real Rewards")
+    plot_heatmap(estimates, title="Estimated Rewards")
+    plot_heatmap(diff, title="Delta (Estimated Rewards)")
+
+
+def plot_reward_distributions(reward_params, show=False):
+    """
+    Plots the distribution of expected rewards for customer-product pairings.
+
+    :param reward_params: A tuple where the first element is a 3x3 numpy array of means and the
+                          second element is a 3x3 numpy array of standard deviations.
+    """
+    means, std_devs = reward_params
+    fig, axes = plt.subplots(3, 3, figsize=(15, 15))
+
+    for i in range(3):
+        for j in range(3):
+            mean, std_dev = means[i, j], std_devs[i, j]
+            x = np.linspace(mean - 3 * std_dev, mean + 3 * std_dev, 1000)
+            y = stats.norm.pdf(x, mean, std_dev)
+
+            ax = axes[i, j]
+            ax.plot(x, y, color="blue")
+            ax.set_title(f"Customer Class {i+1} - Product Class {j+1}")
+            ax.set_xlabel("Reward")
+            ax.set_ylabel("Probability Density")
+
+    plt.tight_layout()
+    plt.savefig(f"plots/reward_distributions_{time.time()}.png")
+    if show:
+        plt.show()
+    plt.close()
+    return fig

@@ -39,6 +39,7 @@ def step_4(
         class_mapping=customer_features,
         n_episodes=n_exp,
         n_phases=1,
+        skip_expected_rewards=True,
     )
 
     return social, matching
