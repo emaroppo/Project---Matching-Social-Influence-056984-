@@ -47,7 +47,7 @@ customer_labels = np.array(customer_labels)
 
 # generate graph
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate)
-
+"""
 plot_network(graph_probabilities, customer_labels)
 
 
@@ -95,8 +95,12 @@ step_4(
     reward_parameters=reward_parameters,
     n_exp=n_episodes,
 )
-
+"""
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate, n_phases=3)
+
+
+for i in graph_probabilities:
+    plot_network(i, customer_labels)
 
 step_5(
     graph_probabilities=graph_probabilities,
@@ -105,6 +109,9 @@ step_5(
     n_episodes=n_episodes,
 )
 graph_probabilities, graph_structure = generate_graph(n_nodes, edge_rate, n_phases=5)
+
+for i in graph_probabilities:
+    plot_network(i, customer_labels)
 step_6(
     graph_probabilities=graph_probabilities,
     graph_structure=graph_structure,

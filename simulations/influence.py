@@ -40,7 +40,7 @@ def influence_simulation(env, models, n_episodes, n_phases=1, joint=False):
         all_metrics.append(metrics)
         if joint:
             all_active_nodes.append(model_active_nodes)
-        plot_influence_probabilities(env, learner=model, n_phases=n_phases)
+        plot_influence_probabilities(env, learner=model)
         env.optimal_rewards = np.empty((0, 2))  # temporary fix
         env.t = 0
 

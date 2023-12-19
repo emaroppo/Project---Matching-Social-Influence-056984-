@@ -193,19 +193,23 @@ def plot_heatmap(array, title=None, use_log_scale=False, show=False):
     plt.close()
 
 
-def plot_influence_probabilities(env, learner, n_phases):
-    if n_phases > 1:
-        real_values = env.probabilities[-1]
-    else:
-        real_values = env.probabilities
+def plot_influence_probabilities(env, learner):
+    real_values = env.probabilities
 
     real_values = env.probabilities
     if "UCB" in learner.name:
         estimates = learner.empirical_means + learner.confidence
+        if learner.graph_structure is not None:
+            estimates = estimates * learner.graph_structure
     elif "TS" in learner.name:
         estimates = learner.beta_parameters[:, :, 0] / (
             learner.beta_parameters[:, :, 0] + learner.beta_parameters[:, :, 1]
         )
+        if learner.graph_structure is not None:
+            estimates = estimates * learner.graph_structure
+
+    elif "EXP3" in learner.name:
+        estimates = learner.get_probabilities()
         if learner.graph_structure is not None:
             estimates = estimates * learner.graph_structure
 
